@@ -40,3 +40,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Hot Swappingの対象にTempleteを加える
+tasks.named('bootRun') {
+    sourceResources sourceSets.main
+}
