@@ -5,10 +5,9 @@ import com.github.y_miyamoton.studytracker.service.SubjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/subjects")
@@ -37,12 +36,15 @@ public class SubjectController {
     }
 
     @GetMapping("/creationForm")
-    public String showCreationForm () {
+    public String showCreationForm (@ModelAttribute SubjectForm form) {
         return "subjects/subjectForm";
     }
 
     @PostMapping
-    public String create(SubjectForm form) {
+    public String create(@Validated SubjectForm form, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return showCreationForm(form);
+        }
         subjectService.create(form.toEntity(userContext.currentUserId()));
         return "redirect:/subjects";
     }

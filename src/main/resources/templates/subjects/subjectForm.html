@@ -9,19 +9,19 @@
 </head>
 <body>
 <section layout:fragment="content">
-    <form th:action="@{/subjects}" method="post">
+    <form th:action="@{/subjects}" method="post" th:object="${subjectForm}">
         <h2 class="mb-3">科目を追加</h2>
         <div>
             <label for="nameInput">名前</label>
-            <input type="text" id="nameInput" name="name">
+            <input type="text" id="nameInput" th:field="*{name}">
         </div>
         <div>
             <label for="colorCodeInput">カラーコード</label>
-            <input type="text" id="colorCodeInput" name="colorCode">
+            <input type="text" id="colorCodeInput" th:field="*{colorCode}">
         </div>
         <div>
             <label for="descriptionInput">詳細</label>
-            <textarea id="descriptionInput" name="description"></textarea>
+            <textarea id="descriptionInput" th:field="*{description}"></textarea>
         </div>
         <div>
             <button type="submit">作成</button>

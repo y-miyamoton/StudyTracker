@@ -1,10 +1,11 @@
 package com.github.y_miyamoton.studytracker.controller.subject;
 
 import com.github.y_miyamoton.studytracker.entity.SubjectEntity;
-
+import jakarta.validation.constraints.NotBlank;
 
 
 public record SubjectForm(
+        @NotBlank(message = "科目名は必須です")
         String name,
         String colorCode,
         String description
