@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!--/* bootstrapの導入 */-->
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">TODOアプリ</title> <!--/* titleタグの共通化 */-->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"> <!--/* webjarを使ってbootstrapの導入 */-->
+</head>
+<body>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script> <!--/* webjarを使ってbootstrapの導入 */-->
+<div class="container"> <!--/* 余白を作る*/-->
+    <!--/* ナビバーの表示 */-->
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">StudyTracker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/subjects}">科目</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/tags}">タグ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logs}">ログ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/timer}">タイマー</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <section layout:fragment="content" class="mt-3"></section>　<!--/* contentという変数で渡された内容がここに書き出される */-->
+</div>
+</body>
+</html>

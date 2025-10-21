@@ -2,9 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.y_miyamoton.studytracker.repository.SubjectRepository">
 
-    <select id="findAllActiveByUserId" resultType="com.github.y_miyamoton.studytracker.entity.SubjectEntity">
+    <select id="selectAllActive"
+            resultType="com.github.y_miyamoton.studytracker.entity.SubjectEntity"
+    >
         SELECT * FROM subjects
         WHERE user_id = #{userId} AND archived = FALSE
         ORDER BY created_at DESC
     </select>
+    
+    <select id="selectById"
+            resultType="com.github.y_miyamoton.studytracker.entity.SubjectEntity"
+    >
+        SELECT * FROM subjects
+        WHERE id = #{id} AND user_id = #{userId}
+    </select>
+
+    <insert id="insert"
+            useGeneratedKeys="true"
+    >
+        INSERT INTO subjects (user_id, name, color_code, description, archived, created_at, updated_at)
+        VALUES (#{userId}, #{name}, #{colorCode}, #{description}, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
 </mapper>
