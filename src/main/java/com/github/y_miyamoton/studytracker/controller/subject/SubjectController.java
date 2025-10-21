@@ -72,4 +72,9 @@ public class SubjectController {
         return "redirect:/subjects/{id}";
     }
 
+    @DeleteMapping("{id}")
+    public String delete(@PathVariable("id") long id){
+        subjectService.archive(id);
+        return "redirect:/subjects";
+    }
 }

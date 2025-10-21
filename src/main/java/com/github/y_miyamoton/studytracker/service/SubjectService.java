@@ -34,4 +34,9 @@ public class SubjectService {
     public void update(SubjectEntity entity) {
         subjectRepository.update(entity);
     }
+
+    @Transactional
+    public void archive(long id) {
+        subjectRepository.archive(id, userContext.currentUserId());
+    }
 }

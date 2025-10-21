@@ -14,4 +14,5 @@ public interface SubjectRepository {
     Optional<SubjectEntity> selectById(@Param("id") Long id, @Param("userId") Long userId);
     void insert(@Param("subjects") SubjectEntity newEntity);
     void update(@Param("subjects") SubjectEntity entity);
+    void archive(@Param("id") Long id, @Param("userId") Long userId);
 }
