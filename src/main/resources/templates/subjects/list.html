@@ -11,7 +11,9 @@
 <section layout:fragment="content">
 <h1>一覧</h1>
 <a th:href="@{/}">戻る</a>
-
+<div>
+    <a th:href="@{/subjects/creationForm}" class="btn btn-primary">作成</a>
+</div>
 <div>
     <table>
         <thead>
@@ -23,8 +25,8 @@
         </thead>
         <tbody>
         <tr th:each="subject : ${subjects}" th:object="${subject}">
-            <td th:text="*{name}"></td>
-            <td th:text="*{colorCode}"></td>
+            <td><a th:href="@{/subjects/{id}(id=*{id})}" th:text="*{name}"></a></td>
+            <td><a th:href="@{/subjects/{id}(id=*{id})}" th:text="*{colorCode}"></a></td>
         </tr>
         </tbody>
     </table>

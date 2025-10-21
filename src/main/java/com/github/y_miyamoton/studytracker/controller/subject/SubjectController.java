@@ -29,23 +29,47 @@ public class SubjectController {
 
     @GetMapping("/{id}")
     public  String showDetail(@PathVariable("id") long id, Model model) {
-        var subjectEntity = subjectService.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Subject not found."));
-        model.addAttribute("subject", SubjectDTO.toDTO(subjectEntity) );
+        var subjectDTO = subjectService.findById(id)
+                .map(SubjectDTO::toDTO)
+                .orElseThrow(SubjectNotFoundException::new);
+        model.addAttribute("subject", subjectDTO);
         return "subjects/detail";
     }
 
     @GetMapping("/creationForm")
-    public String showCreationForm (@ModelAttribute SubjectForm form) {
-        return "subjects/subjectForm";
+    public String showCreationForm (@ModelAttribute SubjectForm form, Model model) {
+        model.addAttribute("mode", "CREATE");
+        return "subjects/form";
     }
 
     @PostMapping
-    public String create(@Validated SubjectForm form, BindingResult bindingResult) {
+    public String create(@Validated SubjectForm form, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            return showCreationForm(form);
+            return showCreationForm(form, model);
         }
         subjectService.create(form.toEntity(userContext.currentUserId()));
         return "redirect:/subjects";
     }
+
+    @GetMapping("/{id}/editForm")
+    public String shoeEditForm(@PathVariable("id") long id, Model model){
+        var form = subjectService.findById(id)
+                .map(SubjectForm::fromEntity)
+                        .orElseThrow(SubjectNotFoundException::new);
+        model.addAttribute("subjectForm", form);
+        model.addAttribute("mode", "EDIT");
+        return "subjects/form";
+    }
+
+    @PutMapping("{id}")
+    public String update(@PathVariable("id") long id, @Validated @ModelAttribute SubjectForm form, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()){
+            model.addAttribute("mode", "EDIT");
+            return "subjects/form";
+        }
+        var entity = form.toEntity(id,userContext.currentUserId());
+        subjectService.update(entity);
+        return "redirect:/subjects/{id}";
+    }
+
 }

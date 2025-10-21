@@ -10,7 +10,15 @@
 <body>
 <section layout:fragment="content">
     <h1>科目詳細</h1>
-    <a th:href="@{/subjects}">科目一覧</a>
+    <a th:href="@{/subjects}">科目一覧に戻る</a>
+    <div>
+        <a th:href="@{/subjects/{id}/editForm(id=${id})}" class="btn btn-primary">編集</a>
+    </div>
+    <div th:object="${subject}">
+        <h2 th:text="*{name}"></h2>
+        <p th:text="*{colorCode}"></p>
+        <pre th:text="*{description}"></pre>
+    </div>
     <h2 th:text="*{name}"></h2>
 </section>
 </body>

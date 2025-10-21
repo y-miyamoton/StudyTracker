@@ -11,7 +11,19 @@ public record SubjectForm(
         String description
 ) {
 
+    public static SubjectForm fromEntity(SubjectEntity subjectEntity) {
+        return new SubjectForm(
+                subjectEntity.name(),
+                subjectEntity.colorCode(),
+                subjectEntity.description()
+        );
+    }
+
     public SubjectEntity toEntity(Long userId) {
         return new SubjectEntity(null, userId, name(), colorCode(), null, false, null, null);
+    }
+
+    public SubjectEntity toEntity(Long id, Long userId) {
+        return new SubjectEntity(id, userId, name(), colorCode(), null, false, null, null);
     }
 }

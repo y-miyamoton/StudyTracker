@@ -29,4 +29,9 @@ public class SubjectService {
     public void create(SubjectEntity newEntity) {
         subjectRepository.insert(newEntity);
     }
+
+    @Transactional
+    public void update(SubjectEntity entity) {
+        subjectRepository.update(entity);
+    }
 }

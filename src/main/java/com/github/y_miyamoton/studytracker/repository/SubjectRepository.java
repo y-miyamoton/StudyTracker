@@ -10,7 +10,8 @@ import java.util.Optional;
 @Mapper
 public interface SubjectRepository {
 
-        List<SubjectEntity> selectAllActive(@Param("userId") Long userId);
-        Optional<SubjectEntity> selectById(@Param("id") Long id, @Param("userId") Long userId);
-        void insert(SubjectEntity newEntity);
+    List<SubjectEntity> selectAllActive(@Param("userId") Long userId);
+    Optional<SubjectEntity> selectById(@Param("id") Long id, @Param("userId") Long userId);
+    void insert(@Param("subjects") SubjectEntity newEntity);
+    void update(@Param("subjects") SubjectEntity entity);
 }
