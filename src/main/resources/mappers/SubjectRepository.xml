@@ -7,36 +7,36 @@
     >
         SELECT * FROM subjects
         WHERE user_id = #{userId} AND archived = FALSE
-        ORDER BY created_at DESC
+        ORDER BY updated_at DESC
     </select>
     
     <select id="selectById"
             resultType="com.github.y_miyamoton.studytracker.entity.SubjectEntity"
     >
         SELECT * FROM subjects
-        WHERE id = #{id} AND user_id = #{userId}
+        WHERE id = #{subjectId} AND user_id = #{userId}
     </select>
 
     <insert id="insert"
             useGeneratedKeys="true"
     >
         INSERT INTO subjects (user_id, name, color_code, description, archived, created_at, updated_at)
-        VALUES (#{subjects.userId}, #{subjects.name}, #{subjects.colorCode}, #{subjects.description}, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        VALUES (#{subject.userId}, #{subject.name}, #{subject.colorCode}, #{subject.description}, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     </insert>
 
     <update id="update">
         UPDATE subjects
-        SET name = #{subjects.name},
-            color_code = #{subjects.colorCode},
-            description = #{subjects.description},
+        SET name = #{subject.name},
+            color_code = #{subject.colorCode},
+            description = #{subject.description},
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = #{subjects.id} AND user_id = #{subjects.userId}
+        WHERE id = #{subject.subjectId} AND user_id = #{subject.userId}
     </update>
 
     <update id="archive">
         UPDATE subjects
         SET archived = TRUE,
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = #{id} AND user_id = #{userId}
+        WHERE id = #{subjectId} AND user_id = #{userId}
     </update>
 </mapper>

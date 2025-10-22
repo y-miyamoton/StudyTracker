@@ -5,13 +5,13 @@
       layout:decorate="~{layout/layout}"
 >
 <head>
-    <title th:text="${mode == 'CREATE'} ? '科目作成' : '科目編集'"></title>
+    <title th:text="${mode == 'CREATE'} ? 'タグ作成' : 'タグ編集'"></title>
 </head>
 <body>
 <section layout:fragment="content">
-    <form th:action="${mode == 'CREATE'} ? @{/subjects} : @{/subjects/{subjectId}(subjectId=${subjectId})}"
+    <form th:action="${mode == 'CREATE'} ? @{/tags} : @{/tags/{tagId}(tagId=${tagId})}"
           th:method="${mode == 'CREATE'} ? post : put"
-          th:object="${subjectForm}">
+          th:object="${tagForm}">
         <div>
             <label for="nameInput">名前</label>
             <input type="text" id="nameInput" th:field="*{name}">
@@ -21,12 +21,8 @@
             <input type="text" id="colorCodeInput" th:field="*{colorCode}">
         </div>
         <div>
-            <label for="descriptionInput">詳細</label>
-            <textarea id="descriptionInput" th:field="*{description}"></textarea>
-        </div>
-        <div>
             <button type="submit" class="btn btn-primary" th:text="${mode == 'CREATE' ? '作成' : '編集'}"></button>
-            <a th:href="${mode == 'CREATE'} ? @{/subjects} : @{/subjects/{subjectId}(subjectId=${subjectId})}"  class="btn btn^secondary">戻る</a>
+            <a th:href="${mode == 'CREATE'} ? @{/tags} : @{/tags/{tagId}(tagId=${tagId})}"  class="btn btn^secondary">戻る</a>
         </div>
     </form>
 </section>

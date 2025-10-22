@@ -21,8 +21,8 @@ public class SubjectService {
         return subjectRepository.selectAllActive(userContext.currentUserId());
     }
 
-    public Optional<SubjectEntity> findById(long id) {
-        return subjectRepository.selectById(id, userContext.currentUserId()); // 後で確認
+    public Optional<SubjectEntity> findById(long subjectId) {
+        return subjectRepository.selectById(subjectId, userContext.currentUserId()); // 後で確認
     }
 
     @Transactional
@@ -36,7 +36,7 @@ public class SubjectService {
     }
 
     @Transactional
-    public void archive(long id) {
-        subjectRepository.archive(id, userContext.currentUserId());
+    public void archive(long subjectId) {
+        subjectRepository.archive(subjectId, userContext.currentUserId());
     }
 }

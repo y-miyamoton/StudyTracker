@@ -11,8 +11,8 @@ import java.util.Optional;
 public interface SubjectRepository {
 
     List<SubjectEntity> selectAllActive(@Param("userId") Long userId);
-    Optional<SubjectEntity> selectById(@Param("id") Long id, @Param("userId") Long userId);
-    void insert(@Param("subjects") SubjectEntity newEntity);
-    void update(@Param("subjects") SubjectEntity entity);
-    void archive(@Param("id") Long id, @Param("userId") Long userId);
+    Optional<SubjectEntity> selectById(@Param("subjectId") Long subjectId, @Param("userId") Long userId);
+    void insert(@Param("subject") SubjectEntity newEntity);
+    void update(@Param("subject") SubjectEntity entity);
+    void archive(@Param("subjectId") Long subjectId, @Param("userId") Long userId);
 }

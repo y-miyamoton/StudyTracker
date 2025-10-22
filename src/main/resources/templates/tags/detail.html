@@ -5,26 +5,25 @@
       layout:decorate="~{layout/layout}"
 >
 <head>
-    <title>科目詳細</title>
+    <title>タグ詳細</title>
 </head>
 <body>
 <section layout:fragment="content">
-    <h1>科目詳細</h1>
-    <a th:href="@{/subjects}">科目一覧に戻る</a>
+    <h1>タグ詳細</h1>
+    <a th:href="@{/tags}">タグ一覧に戻る</a>
     <div>
-        <a th:href="@{/subjects/{subjectId}/editForm(subjectId=${subjectId})}" class="btn btn-primary">編集</a>
+        <a th:href="@{/tags/{tagId}/editForm(tagId=${tagId})}" class="btn btn-primary">編集</a>
         <form
-                th:action="@{/subjects/{subjectId}(subjectId=${subjectId})}"
+                th:action="@{/tags/{tagId}(tagId=${tagId})}"
                 th:method="delete"
                 onclick="return confirm('削除しますか')"
         >
             <button type="submit">削除</button>
         </form>
     </div>
-    <div th:object="${subject}">
+    <div th:object="${tag}">
         <h2 th:text="*{name}"></h2>
         <p th:text="*{colorCode}"></p>
-        <pre th:text="*{description}"></pre>
     </div>
     <h2 th:text="*{name}"></h2>
 </section>

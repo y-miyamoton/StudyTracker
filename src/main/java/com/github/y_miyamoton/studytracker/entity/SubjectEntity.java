@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 
 public record SubjectEntity (
-        Long id,
+        Long subjectId,
         Long userId,
         String name,
         String colorCode,

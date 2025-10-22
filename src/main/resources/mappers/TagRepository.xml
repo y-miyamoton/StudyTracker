@@ -2,14 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.y_miyamoton.studytracker.repository.TagRepository">
 
-    <select id="findAll" resultType="com.github.y_miyamoton.studytracker.entity.TagEntity">
+    <select id="selectAll"
+            resultType="com.github.y_miyamoton.studytracker.entity.TagEntity"
+    >
         SELECT * FROM tags
         WHERE user_id = #{userId}
-        ORDER BY name
+        ORDER BY updated_at DESC
     </select>
 
-    <select id="findById" resultType="com.github.y_miyamoton.studytracker.entity.TagEntity">
+    <select id="selectById"
+            resultType="com.github.y_miyamoton.studytracker.entity.TagEntity"
+    >
         SELECT * FROM tags
-        WHERE id = #{id} AND user_id = #{userId}
+        WHERE id = #{tagId} AND user_id = #{userId}
     </select>
+    
+    <insert id="insert"
+            useGeneratedKeys="true"
+    >
+        INSERT INTO tags (user_id, name, color_code, created_at, updated_at)
+        VALUES (#{tag.userId}, #{tag.name}, #{tag.colorCode}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+    
+    <update id="update">
+        UPDATE tags
+        SET name = #{tag.name},
+            color_code = #{tag.colorCode},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{tag.tagId} AND user_id = #{tag.userId}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM tags
+        WHERE id = #{tagId} AND user_id = #{userId}
+    </delete>
 </mapper>

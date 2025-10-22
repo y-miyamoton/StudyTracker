@@ -23,7 +23,7 @@ public record SubjectForm(
         return new SubjectEntity(null, userId, name(), colorCode(), null, false, null, null);
     }
 
-    public SubjectEntity toEntity(Long id, Long userId) {
-        return new SubjectEntity(id, userId, name(), colorCode(), null, false, null, null);
+    public SubjectEntity toEntity(Long subjectId, Long userId) {
+        return new SubjectEntity(subjectId, userId, name(), colorCode(), null, false, null, null);
     }
 }

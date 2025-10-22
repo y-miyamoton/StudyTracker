@@ -5,14 +5,14 @@
       layout:decorate="~{layout/layout}"
 >
 <head>
-    <title>科目一覧</title>
+    <title>タグ一覧</title>
 </head>
 <body>
 <section layout:fragment="content">
 <h1>一覧</h1>
 <a th:href="@{/}">戻る</a>
 <div>
-    <a th:href="@{/subjects/creationForm}" class="btn btn-primary">作成</a>
+    <a th:href="@{/tags/creationForm}" class="btn btn-primary">作成</a>
 </div>
 <div>
     <table>
@@ -24,9 +24,9 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="subject : ${subjects}" th:object="${subject}">
-            <td><a th:href="@{/subjects/{subjectId}(subjectId=*{subjectId})}" th:text="*{name}"></a></td>
-            <td><a th:href="@{/subjects/{subjectId}(subjectId=*{subjectId})}" th:text="*{colorCode}"></a></td>
+        <tr th:each="tag : ${tags}" th:object="${tag}">
+            <td><a th:href="@{/tags/{tagId}(tagId=*{tagId})}" th:text="*{name}"></a></td>
+            <td><a th:href="@{/tags/{tagId}(tagId=*{tagId})}" th:text="*{colorCode}"></a></td>
         </tr>
         </tbody>
     </table>

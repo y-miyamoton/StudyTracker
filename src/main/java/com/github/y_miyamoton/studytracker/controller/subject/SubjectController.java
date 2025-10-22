@@ -27,9 +27,9 @@ public class SubjectController {
         return "subjects/list";
     }
 
-    @GetMapping("/{id}")
-    public  String showDetail(@PathVariable("id") long id, Model model) {
-        var subjectDTO = subjectService.findById(id)
+    @GetMapping("/{subjectId}")
+    public  String showDetail(@PathVariable("subjectId") long subjectId, Model model) {
+        var subjectDTO = subjectService.findById(subjectId)
                 .map(SubjectDTO::toDTO)
                 .orElseThrow(SubjectNotFoundException::new);
         model.addAttribute("subject", subjectDTO);
@@ -51,9 +51,9 @@ public class SubjectController {
         return "redirect:/subjects";
     }
 
-    @GetMapping("/{id}/editForm")
-    public String shoeEditForm(@PathVariable("id") long id, Model model){
-        var form = subjectService.findById(id)
+    @GetMapping("/{subjectId}/editForm")
+    public String showEditForm(@PathVariable("subjectId") long subjectId, Model model){
+        var form = subjectService.findById(subjectId)
                 .map(SubjectForm::fromEntity)
                         .orElseThrow(SubjectNotFoundException::new);
         model.addAttribute("subjectForm", form);
@@ -61,20 +61,20 @@ public class SubjectController {
         return "subjects/form";
     }
 
-    @PutMapping("{id}")
-    public String update(@PathVariable("id") long id, @Validated @ModelAttribute SubjectForm form, BindingResult bindingResult, Model model) {
+    @PutMapping("{subjectId}")
+    public String update(@PathVariable("subjectId") long subjectId, @Validated @ModelAttribute SubjectForm form, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()){
             model.addAttribute("mode", "EDIT");
             return "subjects/form";
         }
-        var entity = form.toEntity(id,userContext.currentUserId());
+        var entity = form.toEntity(subjectId,userContext.currentUserId());
         subjectService.update(entity);
-        return "redirect:/subjects/{id}";
+        return "redirect:/subjects/{subjectId}";
     }
 
-    @DeleteMapping("{id}")
-    public String delete(@PathVariable("id") long id){
-        subjectService.archive(id);
+    @DeleteMapping("{subjectId}")
+    public String delete(@PathVariable("subjectId") long subjectId){
+        subjectService.archive(subjectId);
         return "redirect:/subjects";
     }
 }

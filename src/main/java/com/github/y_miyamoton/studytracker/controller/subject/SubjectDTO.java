@@ -5,7 +5,7 @@ import com.github.y_miyamoton.studytracker.entity.SubjectEntity;
 import java.time.LocalDateTime;
 
 public record SubjectDTO(
-        long id,
+        long subjectId,
         long userId,
         String name,
         String colorCode,
@@ -16,7 +16,7 @@ public record SubjectDTO(
 ) {
     public static SubjectDTO toDTO(SubjectEntity entity) {
         return new SubjectDTO(
-                entity.id(),
+                entity.subjectId(),
                 entity.userId(),
                 entity.name(),
                 entity.colorCode(),
