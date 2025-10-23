@@ -11,10 +11,11 @@ import java.util.Optional;
 @Mapper
 public interface LogRepository {
 
-    List<LogEntity> selectByPeriod(@Param("userId") Long userId,
-                                 @Param("from")LocalDateTime from,
-                                 @Param("to") LocalDateTime to,
-                                 @Param("subjectId") Long subjectId
+    List<LogEntity> selectByPeriod(
+            @Param("userId") Long userId,
+            @Param("from")LocalDateTime from,
+            @Param("to") LocalDateTime to,
+            @Param("subjectId") Long subjectId
     );
     Optional<LogEntity> selectById(@Param("logId") Long logId, @Param("userId") Long userId);
     void insert(@Param("log") LogEntity newEntity);

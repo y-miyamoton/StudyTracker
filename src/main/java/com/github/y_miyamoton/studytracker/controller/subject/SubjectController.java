@@ -62,7 +62,11 @@ public class SubjectController {
     }
 
     @PutMapping("{subjectId}")
-    public String update(@PathVariable("subjectId") long subjectId, @Validated @ModelAttribute SubjectForm form, BindingResult bindingResult, Model model) {
+    public String update(
+            @PathVariable("subjectId") long subjectId,
+            @Validated @ModelAttribute SubjectForm form,
+            BindingResult bindingResult, Model model
+    ) {
         if (bindingResult.hasErrors()){
             model.addAttribute("mode", "EDIT");
             return "subjects/form";

@@ -62,7 +62,11 @@ public class TagController {
     }
 
     @PutMapping("/{tagId}")
-    public String update(@PathVariable("tagId") long tagId, @Validated @ModelAttribute TagForm form, BindingResult bindingResult, Model model) {
+    public String update(
+            @PathVariable("tagId") long tagId,
+            @Validated @ModelAttribute TagForm form,
+            BindingResult bindingResult, Model model
+    ) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("mode", "EDIT");
             return "tags/form";

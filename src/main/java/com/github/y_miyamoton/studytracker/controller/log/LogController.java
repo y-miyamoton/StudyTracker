@@ -27,9 +27,16 @@ public class LogController {
 
     @GetMapping
     public String list(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate from,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate to,
+
             @RequestParam(required = false) Long subjectId,
+
             Model model
     ){
         if (from == null) {
@@ -85,7 +92,6 @@ public class LogController {
                 .map(SubjectDTO::toDTO)
                 .toList();
         model.addAttribute("subjects", subjectList);
-        model.addAttribute("mode", "CREATE");
         return "logs/form";
     }
 
@@ -98,20 +104,13 @@ public class LogController {
         return "redirect:/logs";
     }
 
-    @GetMapping("/{logId}/editForm")
-    public String showEditForm(@PathVariable("logId") long logId, Model model) {
-        var form = logService.findById(logId)
-                .map(LogForm::fromEntity)
-                .orElseThrow(LogNotFoundException::new);
-        model.addAttribute("logForm", form);
-        model.addAttribute("mode", "EDIT");
-        return "logs/form";
-    }
-
     @PutMapping("/{logId}")
-    public String update(@PathVariable("logId") long logId, @Validated @ModelAttribute LogForm form, BindingResult bindingResult, Model model) {
+    public String update(
+            @PathVariable("logId") long logId,
+            @Validated @ModelAttribute LogForm form,
+            BindingResult bindingResult, Model model
+    ) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("mode", "EDIT");
             return "redirect:/edit";
         }
         var entity = form.toEntity(logId, userContext.currentUserId());

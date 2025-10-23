@@ -5,12 +5,12 @@
       layout:decorate="~{layout/layout}"
 >
 <head>
-    <title th:text="${mode == 'CREATE'} ? 'ログ作成' : 'ログ編集'"></title>
+    <title th:text="ログ作成"></title>
 </head>
 <body>
 <section layout:fragment="content">
-    <form th:action="${mode == 'CREATE'} ? @{/logs} : @{/logs/{logId}(logId=${logId})}"
-          th:method="${mode == 'CREATE'} ? post : put"
+    <form th:action="@{/logs}"
+          th:method="post"
           th:object="${logForm}">
         <div>
             <label for="subjectInput">科目</label>
@@ -31,8 +31,8 @@
             <textarea id="memoInput" th:field="*{memo}"></textarea>
         </div>
         <div>
-            <button type="submit" class="btn btn-primary" th:text="${mode == 'CREATE' ? '作成' : '編集'}"></button>
-            <a th:href="${mode == 'CREATE'} ? @{/logs} : @{/logs/{logId}(logId=${logId})}"  class="btn btn^secondary">戻る</a>
+            <button type="submit" class="btn btn-primary" th:text="作成"></button>
+            <a th:href="@{/logs}"  class="btn btn-secondary">戻る</a>
         </div>
     </form>
 </section>
