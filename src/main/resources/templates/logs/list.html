@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+    <title>ログ一覧</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <h1>ログ一覧</h1>
+    <div>
+        <a th:href="@{/}" class="btn btn-secondary">戻る</a>
+        <a th:href="@{/logs/creationForm}" class="btn btn-primary">手動登録</a>
+    </div>
+
+    <form th:method="get" th:action="@{/logs}" class="bg-white p-3 rounded shadow-sm mb-3">
+        <div>
+            <label for="fromInput">From</label>
+            <input type="date"
+                   id="fromInput"
+                   name="from"
+                   th:value="${#temporals.format(from, 'yyyy-MM-dd')}" />
+        </div>
+        <div>
+            <label for="toInput">To</label>
+            <input type="date"
+                   id="toInput"
+                   name="to"
+                   th:value="${#temporals.format(to, 'yyyy-MM-dd')}" />
+        </div>
+        <div>
+            <label for="subjectInput">Subject</label>
+            <select id="subjectInput" name="subjectId" class="form-select">
+                <option th:selected="${subjectId == null}" value="">（すべて）</option>
+                <option th:each="subject : ${subjects}"
+                        th:value="${subject.subjectId}"
+                        th:text="${subject.name}"
+                        th:selected="${subjectId != null and subjectId == subject.subjectId}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-outline-secondary">絞り込み</button>
+        </div>
+    </form>
+
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>科目</th>
+                <th>分</th>
+                <th>メモ</th>
+                <th>開始</th>
+                <th>終了</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="log : ${logs}" th:object="${log}" th:with="s=*{startAt}, e=*{endAt}">
+                <td><a th:text="*{name}"></a></td>
+                <td th:text="*{minutes}"></td>
+                <td th:text="*{memo}"></td>
+                <td><a th:href="@{/logs/{logId}(logId=*{logId})}" th:text="${#temporals.format(s, 'yyyy/MM/dd HH:mm')}"></a></td>
+                <td><a th:href="@{/logs/{logId}(logId=*{logId})}" th:text="${#temporals.format(e, 'yyyy/MM/dd HH:mm')}"></a></td>
+          　 </tr>
+          　 </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

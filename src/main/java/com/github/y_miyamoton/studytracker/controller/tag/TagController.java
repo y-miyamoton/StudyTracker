@@ -61,7 +61,7 @@ public class TagController {
         return "tags/form";
     }
 
-    @PutMapping("{tagId}")
+    @PutMapping("/{tagId}")
     public String update(@PathVariable("tagId") long tagId, @Validated @ModelAttribute TagForm form, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("mode", "EDIT");
@@ -72,7 +72,7 @@ public class TagController {
         return "redirect:/tags/{tagId}";
     }
 
-    @DeleteMapping("{tagId}")
+    @DeleteMapping("/{tagId}")
     public String delete(@PathVariable("tagId") long tagId) {
         tagService.delete(tagId);
         return  "redirect:/tags";

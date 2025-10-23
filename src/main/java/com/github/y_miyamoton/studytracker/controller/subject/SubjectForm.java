@@ -20,10 +20,28 @@ public record SubjectForm(
     }
 
     public SubjectEntity toEntity(Long userId) {
-        return new SubjectEntity(null, userId, name(), colorCode(), null, false, null, null);
+        return new SubjectEntity(
+                null,
+                userId,
+                name(),
+                colorCode(),
+                null,
+                false,
+                null,
+                null
+        );
     }
 
     public SubjectEntity toEntity(Long subjectId, Long userId) {
-        return new SubjectEntity(subjectId, userId, name(), colorCode(), null, false, null, null);
+        return new SubjectEntity(
+                subjectId,
+                userId,
+                name(),
+                colorCode(),
+                null,
+                false,
+                null,
+                null
+        );
     }
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+    <title th:text="${mode == 'CREATE'} ? 'ログ作成' : 'ログ編集'"></title>
+</head>
+<body>
+<section layout:fragment="content">
+    <form th:action="${mode == 'CREATE'} ? @{/logs} : @{/logs/{logId}(logId=${logId})}"
+          th:method="${mode == 'CREATE'} ? post : put"
+          th:object="${logForm}">
+        <div>
+            <label for="subjectInput">科目</label>
+            <select class="form-select" id="subjectInput" th:field="*{subjectId}">
+                <option th:each="subject : ${subjects}" th:value="${subject.subjectId}" th:text="${subject.name}"></option>
+            </select>
+        </div>
+        <div>
+            <label for="startInput">開始</label>
+            <input type="datetime-local" id="startInput" th:field="*{startAt}">
+        </div>
+        <div>
+            <label for="endInput">終了</label>
+            <input type="datetime-local" id="endInput" th:field="*{endAt}">
+        </div>
+        <div>
+            <label for="memoInput">メモ</label>
+            <textarea id="memoInput" th:field="*{memo}"></textarea>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary" th:text="${mode == 'CREATE' ? '作成' : '編集'}"></button>
+            <a th:href="${mode == 'CREATE'} ? @{/logs} : @{/logs/{logId}(logId=${logId})}"  class="btn btn^secondary">戻る</a>
+        </div>
+    </form>
+</section>
+</body>
+</html>

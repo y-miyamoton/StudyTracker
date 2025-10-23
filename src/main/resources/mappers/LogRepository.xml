@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.y_miyamoton.studytracker.repository.LogRepository">
+
+    <select id="selectByPeriod"
+            resultType="com.github.y_miyamoton.studytracker.entity.LogEntity"
+    >
+        SELECT * FROM logs
+        WHERE user_id = #{userId}
+        <if test="subjectId != null">AND subject_id = #{subjectId}</if>
+        AND start_at &lt;= #{to}
+        AND end_at &gt;= #{from}
+        ORDER BY start_at DESC
+    </select>
+
+    <select id="selectById"
+            resultType="com.github.y_miyamoton.studytracker.entity.LogEntity"
+    >
+        SELECT * FROM logs
+        WHERE id = #{logId} AND user_id = #{userId}
+    </select>
+
+    <insert id="insert"
+            useGeneratedKeys="true"
+    >
+        INSERT INTO logs (user_id, subject_id, start_at, end_at, minutes, memo, created_at, updated_at)
+        VALUES (#{log.userId}, #{log.subjectId}, #{log.startAt}, #{log.endAt}, #{log.minutes}, #{log.memo}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+
+    <update id="update">
+        UPDATE logs
+        SET start_at = #{log.startAt},
+            end_at = #{log.endAt},
+            minutes = #{log.minutes},
+            memo = #{log.memo},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{log.logId} AND user_id = #{log.userId}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM logs
+        WHERE id = #{logId} AND user_id = #{userId}
+    </delete>
+</mapper>

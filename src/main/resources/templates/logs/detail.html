@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+    <title>ログ詳細</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <h1>ログ詳細</h1>
+    <a th:href="@{/logs}">ログ一覧に戻る</a>
+    <div>
+        <a th:href="@{/logs/{logId}/editForm(logId=${logId})}" class="btn btn-primary">編集</a>
+        <form th:action="@{/logs/{logId}(logId=${logId})}"
+              th:method="delete"
+              onclick="return confirm('削除しますか')"
+        >
+            <button type="submit">削除</button>
+        </form>
+    </div>
+    <div th:object="${log}">
+        <h2 th:text="*{name}"></h2>
+        <p th:text="*{minutes}"></p>
+        <pre th:text="*{startAt}"></pre>
+        <pre th:text="*{endAt}"></pre>
+    </div>
+
+</section>
+</body>
+</html>

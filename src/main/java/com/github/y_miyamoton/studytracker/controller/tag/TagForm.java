@@ -17,11 +17,25 @@ public record TagForm(
     }
 
     public TagEntity toEntity(Long userId) {
-        return new TagEntity(null, userId, name(), colorCode(), null, null);
+        return new TagEntity(
+                null,
+                userId,
+                name(),
+                colorCode(),
+                null,
+                null
+        );
     }
 
     public TagEntity toEntity(Long tagId, Long userId) {
-        return new TagEntity(tagId, userId, name(), colorCode(), null, null);
+        return new TagEntity(
+                tagId,
+                userId,
+                name(),
+                colorCode(),
+                null,
+                null
+        );
     }
 
 }
