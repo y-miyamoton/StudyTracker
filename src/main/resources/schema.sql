@@ -61,7 +61,7 @@ CONSTRAINT fk_log_tag PRIMARY KEY (user_id, log_id, tag_id)
 );
 CREATE INDEX IF NOT EXISTS idx_logtag_user_tag ON log_tags(user_id, tag_id);
 
-CREATE TABLE IF NOT EXISTS pomodoro_session
+CREATE TABLE IF NOT EXISTS timers
 (
 id BIGINT PRIMARY KEY AUTO_INCREMENT,
 user_id BIGINT NOT NULL,
@@ -70,10 +70,10 @@ focus_minutes INT NOT NULL,
 break_minutes INT,
 start_at TIMESTAMP NOT NULL,
 end_at TIMESTAMP,
-CONSTRAINT fk_pomo_user FOREIGN KEY (user_id) REFERENCES users(id),
-CONSTRAINT fk_pomo_subjects FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+CONSTRAINT fk_timer_user FOREIGN KEY (user_id) REFERENCES users(id),
+CONSTRAINT fk_timer_subjects FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
 );
-CREATE INDEX IF NOT EXISTS idx_pomo_user_subject_start ON pomodoro_session(user_id, subject_id, start_at);
+CREATE INDEX IF NOT EXISTS idx_pomo_user_subject_start ON timers(user_id, subject_id, start_at);
 
 CREATE TABLE IF NOT EXISTS app_audit
 (

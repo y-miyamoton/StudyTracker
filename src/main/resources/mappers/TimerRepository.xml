@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.y_miyamoton.studytracker.repository.TimerRepository">
+
+    <insert id="startFocus"
+            useGeneratedKeys="true"
+            keyProperty="timer.timerId"
+            keyColumn="id"
+    >
+        INSERT INTO timers (user_id, subject_id, focus_minutes, break_minutes, start_at)
+        VALUES (#{timer.userId}, #{timer.subjectId}, #{timer.focusMinutes}, #{timer.breakMinutes}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <update id="stopFocus">
+        UPDATE timers
+        SET end_at = CURRENT_TIMESTAMP
+        WHERE id = #{timerId} AND user_id = #{userId}
+    </update>
+
+    <select id="findActive">
+        SELECT * FROM timers
+        WHERE user_id = #{userId} AND end_at IS NULL
+        ORDER BY start_at DESC
+        LIMIT 1
+    </select>
+
+    <select id="findById">
+        SELECT * FROM timers
+        WHERE id = #{timerId} AND user_id = #{userId}
+    </select>
+</mapper>
