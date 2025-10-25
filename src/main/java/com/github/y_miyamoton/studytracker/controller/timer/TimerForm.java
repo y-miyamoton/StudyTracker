@@ -4,7 +4,6 @@ import com.github.y_miyamoton.studytracker.entity.TimerEntity;
 import jakarta.validation.constraints.NotNull;
 
 public record TimerForm(
-        Long timerId,
         @NotNull Long subjectId,
         Integer focusMinutes,
         Integer breakMinutes
@@ -16,7 +15,7 @@ public record TimerForm(
 
     public TimerEntity toEntity(Long userId) {
         return new TimerEntity(
-                timerId(),
+                null,
                 userId,
                 subjectId(),
                 focusMinutes(),

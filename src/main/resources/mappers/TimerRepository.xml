@@ -11,21 +11,16 @@
         VALUES (#{timer.userId}, #{timer.subjectId}, #{timer.focusMinutes}, #{timer.breakMinutes}, CURRENT_TIMESTAMP)
     </insert>
 
-    <update id="stopFocus">
+    <update id="stopActive">
         UPDATE timers
         SET end_at = CURRENT_TIMESTAMP
-        WHERE id = #{timerId} AND user_id = #{userId}
+        WHERE user_id = #{userId} AND end_at IS NULL
     </update>
 
-    <select id="findActive">
+    <select id="findActive" resultType="com.github.y_miyamoton.studytracker.entity.TimerEntity">
         SELECT * FROM timers
         WHERE user_id = #{userId} AND end_at IS NULL
         ORDER BY start_at DESC
         LIMIT 1
-    </select>
-
-    <select id="findById">
-        SELECT * FROM timers
-        WHERE id = #{timerId} AND user_id = #{userId}
     </select>
 </mapper>

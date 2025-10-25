@@ -5,6 +5,7 @@ import com.github.y_miyamoton.studytracker.entity.TimerEntity;
 import com.github.y_miyamoton.studytracker.repository.TimerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -13,21 +14,22 @@ public class TimerService {
     private final TimerRepository timerRepository;
     private final UserContext userContext;
 
-    public Long startFocus(TimerEntity entity) {
+    @Transactional
+    public void startFocus(TimerEntity entity) {
         var active = timerRepository.findActive(userContext.currentUserId());
         if (active != null) {
             throw new IllegalStateException("すでにタイマーが起動中です。停止してから開始してください。");
         }
         timerRepository.startFocus(entity);
-        return entity.getTimerId();
     }
 
+    @Transactional
     public void stopFocus() {
         var active = timerRepository.findActive(userContext.currentUserId());
         if (active == null) {
             throw new IllegalStateException("起動中のタイマーがありません。");
         }
-        timerRepository.stopFocus(active.getTimerId(), userContext.currentUserId());
+        timerRepository.stopActive(userContext.currentUserId());
     }
 
     public void startBreak() {
