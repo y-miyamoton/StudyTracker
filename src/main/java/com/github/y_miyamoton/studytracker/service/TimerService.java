@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TimerService {
 
     private final TimerRepository timerRepository;
+    private final AppAuditService appAuditService;
     private final UserContext userContext;
 
     @Transactional
@@ -21,6 +22,7 @@ public class TimerService {
             throw new IllegalStateException("すでにタイマーが起動中です。停止してから開始してください。");
         }
         timerRepository.startFocus(entity);
+        appAuditService.log(userContext.currentUserId(), "TIMER_START","TIMER", entity.getSubjectId(), "focus=" + entity.getFocusMinutes());
     }
 
     @Transactional
@@ -30,6 +32,7 @@ public class TimerService {
             throw new IllegalStateException("起動中のタイマーがありません。");
         }
         timerRepository.stopActive(userContext.currentUserId());
+        appAuditService.log(userContext.currentUserId(), "TIMER_STOP","TIMER", active.getSubjectId(), "minutes=" + active.getFocusMinutes());
     }
 
     public void startBreak() {
@@ -37,6 +40,7 @@ public class TimerService {
         if (active == null) {
             throw new IllegalStateException("起動中のタイマーがありません。");
         }
+        appAuditService.log(userContext.currentUserId(), "BREAK_START","TIMER", active.getSubjectId(),  null);
     }
 
     public void stopBreak() {
@@ -44,6 +48,7 @@ public class TimerService {
         if (active == null) {
             throw new IllegalStateException("起動中のタイマーがありません。");
         }
+        appAuditService.log(userContext.currentUserId(), "BREAK_STOP","TIMER", active.getSubjectId(), null);
     }
 
     public TimerEntity currentActive() {

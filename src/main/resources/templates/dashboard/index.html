@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+    <title>ダッシュボード</title>
+</head>
+<body>
+<section layout:fragment="content">
+
+    <div class="row g-3" th:object="${dashboard}">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>今日の学習時間</h5>
+                    <p class="display-6" th:text="*{todayMinutes} + ' 分'">0 分</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>今週の学習時間</h5>
+                    <p class="display-6" th:text="*{weekMinutes} + ' 分'">0 分</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>今月の学習時間</h5>
+                    <p class="display-6" th:text="*{monthMinutes} + ' 分'">0 分</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-3" th:object="${dashboard}">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>科目別（今月）</h5>
+                    <table class="table table-sm">
+                        <thead><tr><th>科目</th><th class="text-end">合計(分)</th></tr></thead>
+                        <tbody>
+                        <tr th:each="row : ${dashboard.bySubject}">
+                            <td th:text="${row.subjectName}"></td>
+                            <td class="text-end" th:text="${row.totalMinutes}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

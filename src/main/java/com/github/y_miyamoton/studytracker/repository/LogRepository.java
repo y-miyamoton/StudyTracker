@@ -1,6 +1,7 @@
 package com.github.y_miyamoton.studytracker.repository;
 
 import com.github.y_miyamoton.studytracker.entity.LogEntity;
+import com.github.y_miyamoton.studytracker.entity.SubjectMinuteEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,4 +22,11 @@ public interface LogRepository {
     void insert(@Param("log") LogEntity newEntity);
     void update(@Param("log") LogEntity entity);
     void delete(@Param("logId") Long logId, @Param("userId") Long userId);
+    Integer sumMinutesByPeriod(@Param("userId") Long userId,
+                               @Param("from") LocalDateTime from,
+                               @Param("to") LocalDateTime to);
+
+    List<SubjectMinuteEntity> sumBySubject(@Param("userId") Long userId,
+                                           @Param("from") LocalDateTime from,
+                                           @Param("to") LocalDateTime to);
 }

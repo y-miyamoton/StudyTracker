@@ -19,6 +19,17 @@
             </select>
         </div>
         <div>
+            <label>タグ</label>
+            <div th:each="tag : ${tags}">
+                <label>
+                    <input type="checkbox"
+                           th:value="${tag.tagId}"
+                           th:field="*{tagIds}" /> <!-- ←★List<Long> にバインド -->
+                    <span th:text="${tag.name}"></span>
+                </label>
+            </div>
+        </div>
+        <div>
             <label for="startInput">開始</label>
             <input type="datetime-local" id="startInput" th:field="*{startAt}">
         </div>

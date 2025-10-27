@@ -73,7 +73,6 @@ public class LogController {
         var form = logService.findById(logId)
                 .map(LogForm::fromEntity)
                 .orElseThrow(LogNotFoundException::new);
-        model.addAttribute("logForm", form);
         var subjectList = subjectService.findActive()
                 .stream()
                 .map(SubjectDTO::toDTO)
@@ -111,7 +110,7 @@ public class LogController {
             BindingResult bindingResult, Model model
     ) {
         if (bindingResult.hasErrors()) {
-            return "redirect:/edit";
+            return "logs/edit";
         }
         var entity = form.toEntity(logId, userContext.currentUserId());
         logService.update(entity);
@@ -124,45 +123,3 @@ public class LogController {
         return "redirect:/logs";
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

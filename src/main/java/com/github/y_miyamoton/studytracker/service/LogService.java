@@ -2,6 +2,7 @@ package com.github.y_miyamoton.studytracker.service;
 
 import com.github.y_miyamoton.studytracker.config.UserContext;
 import com.github.y_miyamoton.studytracker.entity.LogEntity;
+import com.github.y_miyamoton.studytracker.entity.SubjectMinuteEntity;
 import com.github.y_miyamoton.studytracker.repository.LogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class LogService {
 
     private final LogRepository logRepository;
+    private final AppAuditService appAuditService;
     private final UserContext userContext;
 
     public List<LogEntity> findByPeriod(LocalDateTime from, LocalDateTime to, Long subjectId) {
@@ -29,6 +31,7 @@ public class LogService {
     @Transactional
     public void create(LogEntity newEntity) {
         logRepository.insert(newEntity);
+        appAuditService.log(userContext.currentUserId(), "CREATE","LOG", newEntity.logId(), "subject=" + newEntity.subjectId() + ", minutes=" + newEntity.minutes());
     }
 
     @Transactional
@@ -39,5 +42,14 @@ public class LogService {
     @Transactional
     public void delete(long logId) {
         logRepository.delete(logId, userContext.currentUserId());
+        appAuditService.log(userContext.currentUserId(), "DELETE","LOG", logId, null);
+    }
+
+    public int totalMinutes(LocalDateTime from, LocalDateTime to) {
+        return logRepository.sumMinutesByPeriod(userContext.currentUserId(), from, to);
+    }
+
+    public List<SubjectMinuteEntity> minutesBySubject(LocalDateTime from, LocalDateTime to) {
+        return logRepository.sumBySubject(userContext.currentUserId(), from, to);
     }
 }

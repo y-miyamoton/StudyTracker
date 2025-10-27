@@ -35,7 +35,7 @@
             <input type="number" id="breakInput" th:value="*{breakMinutes}" min="0">
         </div>
         <div>
-            <button>開始</button>
+            <button th:disabled="${active != null}">開始</button>
         </div>
         <small class="text-muted">※ 二重起動不可。起動中は「開始」ボタンが無効になります。</small>
     </form>

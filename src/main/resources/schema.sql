@@ -21,18 +21,6 @@ CREATE TABLE IF NOT EXISTS subjects
 );
 CREATE INDEX IF NOT EXISTS idx_subjects_user_name ON subjects(user_id, name);
 
-CREATE TABLE IF NOT EXISTS tags
-(
-  id         BIGINT       PRIMARY KEY AUTO_INCREMENT,
-  user_id    BIGINT       NOT NULL,
-  name       VARCHAR(100) NOT NULL,
-  color_code VARCHAR(7),
-  created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_tags_user FOREIGN KEY (user_id) REFERENCES users(id)
-);
-CREATE UNIQUE INDEX idx_tags_user_name ON tags(user_id, name);
-
 CREATE TABLE IF NOT EXISTS logs
 (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -48,18 +36,6 @@ CREATE TABLE IF NOT EXISTS logs
   CONSTRAINT fk_logs_subject FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_logs_user_subject_start ON logs(user_id, subject_id, start_at);
-
-CREATE TABLE IF NOT EXISTS log_tags
-(
-user_id BIGINT NOT NULL,
-log_id BIGINT NOT NULL,
-tag_id BIGINT NOT NULL,
-CONSTRAINT fk_logtag_user FOREIGN KEY (user_id) REFERENCES users(id),
-CONSTRAINT fk_logtag_log FOREIGN KEY (log_id) REFERENCES logs(id) ON DELETE CASCADE,
-CONSTRAINT fk_logtag_tag FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE,
-CONSTRAINT fk_log_tag PRIMARY KEY (user_id, log_id, tag_id)
-);
-CREATE INDEX IF NOT EXISTS idx_logtag_user_tag ON log_tags(user_id, tag_id);
 
 CREATE TABLE IF NOT EXISTS timers
 (
@@ -88,35 +64,3 @@ CONSTRAINT fk_audit_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
 CREATE INDEX IF NOT EXISTS idx_audit_user_created ON app_audit(user_id,created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_audit_user_entity ON app_audit(user_id, entity, entity_id, created_at);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

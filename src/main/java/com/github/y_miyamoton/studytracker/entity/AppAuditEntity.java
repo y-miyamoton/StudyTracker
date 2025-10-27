@@ -6,7 +6,7 @@ public record AppAuditEntity(
         Long appId,
         Long userId,
         String action, // CREATE / UPDATE / DELETE / TIMER_START / TIMER_STOP / BREAK_START / BREAK_STOP
-        String entity, // SUBJECT / TAG / LOG / POMODORO
+        String entity, // SUBJECT / LOG / TIMER
         Long entityId,
         String detail,
         LocalDateTime createdAt

@@ -27,6 +27,18 @@
                         th:text="${subject.name}">
                 </option>
             </select>
+            <div class="mt-3">
+                <label class="form-label">タグ（任意・複数可）</label>
+                <div class="d-flex flex-wrap gap-3">
+                    <label th:each="tag : ${tags}" class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               th:value="${tag.tagId}"
+                               th:field="*{tagIds}">
+                        <span class="form-check-label" th:text="${tag.name}"></span>
+                    </label>
+                </div>
+            </div>
             <div class="col-md-6">
                 <label for="startInput" class="form-label">開始</label>
                 <input type="datetime-local" id="startInput" class="form-control" th:field="*{startAt}">

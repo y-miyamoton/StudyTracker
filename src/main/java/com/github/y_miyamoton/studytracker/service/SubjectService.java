@@ -15,6 +15,7 @@ import java.util.Optional;
 public class SubjectService {
 
     private final SubjectRepository subjectRepository;
+    private final AppAuditService appAuditService;
     private final UserContext userContext;
 
     public List<SubjectEntity> findActive(){
@@ -28,15 +29,18 @@ public class SubjectService {
     @Transactional
     public void create(SubjectEntity newEntity) {
         subjectRepository.insert(newEntity);
+        appAuditService.log(userContext.currentUserId(), "CREATE","SUBJECT", newEntity.subjectId(), "name=" + newEntity.name());
     }
 
     @Transactional
     public void update(SubjectEntity entity) {
         subjectRepository.update(entity);
+        appAuditService.log(userContext.currentUserId(), "UPDATE","SUBJECT", entity.subjectId(), "name=" + entity.name());
     }
 
     @Transactional
     public void archive(long subjectId) {
         subjectRepository.archive(subjectId, userContext.currentUserId());
+        appAuditService.log(userContext.currentUserId(), "DELETE","SUBJECT", subjectId, null);
     }
 }
