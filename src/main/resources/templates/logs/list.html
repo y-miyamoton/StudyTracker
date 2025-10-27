@@ -3,71 +3,111 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}"
->
+      th:with="activePage='logs'">
 <head>
     <title>ログ一覧</title>
+    <style>
+        /* さりげない強調と行クリック用の補助 */
+        .page-title { font-weight: 600; }
+        .card-soft { border:0; border-radius: 1rem; box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+        .table thead th { font-weight: 600; }
+        .row-link { position: relative; }         /* stretched-link のために必要 */
+    </style>
 </head>
 <body>
 <section layout:fragment="content">
-    <h1>ログ一覧</h1>
-    <div>
-        <a th:href="@{/}" class="btn btn-secondary">戻る</a>
-        <a th:href="@{/logs/creationForm}" class="btn btn-primary">手動登録</a>
+
+    <!-- ヘッダ -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h4 page-title mb-0">ログ一覧</h1>
+        <div class="d-flex gap-2">
+            <a th:href="@{/}" class="btn btn-outline-secondary">ダッシュボードへ</a>
+            <a th:href="@{/logs/creationForm}" class="btn btn-primary">手動登録</a>
+        </div>
     </div>
 
-    <form th:method="get" th:action="@{/logs}" class="bg-white p-3 rounded shadow-sm mb-3">
-        <div>
-            <label for="fromInput">From</label>
-            <input type="date"
-                   id="fromInput"
-                   name="from"
-                   th:value="${#temporals.format(from, 'yyyy-MM-dd')}" />
+    <!-- フィルタ（控えめなカード内に） -->
+    <div class="card card-soft mb-3">
+        <div class="card-body">
+            <form th:method="get" th:action="@{/logs}">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <label for="fromInput" class="form-label">From</label>
+                        <input type="date" id="fromInput" name="from"
+                               class="form-control"
+                               th:value="${#temporals.format(from, 'yyyy-MM-dd')}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="toInput" class="form-label">To</label>
+                        <input type="date" id="toInput" name="to"
+                               class="form-control"
+                               th:value="${#temporals.format(to, 'yyyy-MM-dd')}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="subjectInput" class="form-label">科目</label>
+                        <select id="subjectInput" name="subjectId" class="form-select">
+                            <option th:selected="${subjectId == null}" value="">（すべて）</option>
+                            <option th:each="subject : ${subjects}"
+                                    th:value="${subject.subjectId}"
+                                    th:text="${subject.name}"
+                                    th:selected="${subjectId != null and subjectId == subject.subjectId}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-primary w-100">絞り込み</button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div>
-            <label for="toInput">To</label>
-            <input type="date"
-                   id="toInput"
-                   name="to"
-                   th:value="${#temporals.format(to, 'yyyy-MM-dd')}" />
-        </div>
-        <div>
-            <label for="subjectInput">Subject</label>
-            <select id="subjectInput" name="subjectId" class="form-select">
-                <option th:selected="${subjectId == null}" value="">（すべて）</option>
-                <option th:each="subject : ${subjects}"
-                        th:value="${subject.subjectId}"
-                        th:text="${subject.name}"
-                        th:selected="${subjectId != null and subjectId == subject.subjectId}">
-                </option>
-            </select>
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button type="submit" class="btn btn-outline-secondary">絞り込み</button>
-        </div>
-    </form>
-
-    <div>
-        <table>
-            <thead>
-            <tr>
-                <th>科目</th>
-                <th>分</th>
-                <th>メモ</th>
-                <th>開始</th>
-                <th>終了</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="log : ${logs}" th:object="${log}" th:with="s=*{startAt}, e=*{endAt}">
-                <td><a th:text="*{name}"></a></td>
-                <td th:text="*{minutes}"></td>
-                <td th:text="*{memo}"></td>
-                <td><a th:href="@{/logs/{logId}(logId=*{logId})}" th:text="${#temporals.format(s, 'yyyy/MM/dd HH:mm')}"></a></td>
-                <td><a th:href="@{/logs/{logId}(logId=*{logId})}" th:text="${#temporals.format(e, 'yyyy/MM/dd HH:mm')}"></a></td>
-          　 </tr>
-          　 </tbody>
-        </table>
     </div>
+
+    <!-- 一覧 -->
+    <div class="card card-soft">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width:26%">科目</th>
+                        <th style="width:14%" class="text-end">学習時間</th>
+                        <th style="width:34%">メモ</th>
+                        <th style="width:13%">開始</th>
+                        <th style="width:13%">終了</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- 空状態 -->
+                    <tr th:if="${#lists.isEmpty(logs)}">
+                        <td colspan="5" class="text-center py-4 text-muted">該当するログがありません</td>
+                    </tr>
+
+                    <!-- 行 -->
+                    <tr th:each="log : ${logs}" th:object="${log}" class="row-link"
+                        th:with="s=*{startAt}, e=*{endAt}, m=*{minutes}, h=${m/60}, r=${m%60}">
+                        <td>
+                            <a th:href="@{/logs/{logId}(logId=*{logId})}" class="stretched-link"></a>
+                            <div class="fw-semibold" th:text="*{name}">科目名</div>
+                            <div class="small text-muted"
+                                 th:text="${#temporals.format(s, 'yyyy/MM/dd')}">2025/10/27</div>
+                        </td>
+                        <td class="text-end">
+              <span th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間')
+                                : ${m} + ' 分'">0 分</span>
+                        </td>
+                        <td>
+                            <div class="text-truncate" style="max-width: 480px;"
+                                 th:text="*{memo}">メモ</div>
+                        </td>
+                        <td th:text="${#temporals.format(s, 'HH:mm')}">00:00</td>
+                        <td th:text="${#temporals.format(e, 'HH:mm')}">00:00</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 </section>
 </body>
 </html>

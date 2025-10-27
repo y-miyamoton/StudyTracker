@@ -3,57 +3,95 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}"
->
+      th:with="activePage='timers'">
 <head>
     <title>ポモドーロ</title>
+    <style>
+        .card-soft { border:0; border-radius:1rem; box-shadow:0 6px 20px rgba(0,0,0,.06); }
+        .stat { font-weight:600; }
+        .muted { color: #6c757d; }
+        .chip { display:inline-block; padding:.25rem .5rem; border-radius:999px; background:#f1f3f5; font-size:.85rem; }
+        .btn-wide { min-width: 8rem; }
+    </style>
 </head>
 <body>
 <section layout:fragment="content">
-    <div>
-    <span th:if="${active != null}">
-      起動中：タイマーID <b th:text="${active.timerId}"></b>
-      ／ 開始 <span th:text="${#temporals.format(active.startAt, 'HH:mm:ss')}"></span>
-      ／ 予定
-        <span th:with="m=${active.focusMinutes}, h=${m / 60}, r=${m % 60}"
-              th:text="${h > 0} ? (${r > 0} ? ${h} + '時間' + ${r} + '分' : ${h} + '時間') : ${m} + '分'">
+
+    <!-- ヘッダー -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h1 class="h4 mb-1">ポモドーロ</h1>
+            <div class="muted">集中と休憩を切り替えて、学習ログを自動記録します</div>
+        </div>
+    </div>
+
+    <!-- ステータス -->
+    <div class="card card-soft mb-3">
+        <div class="card-body d-flex flex-wrap align-items-center gap-3">
+            <div th:if="${active != null}">
+                <span class="chip">起動中</span>
+                <span class="ms-2">タイマーID <b th:text="${active.timerId}">1</b></span>
+                <span class="ms-3">開始 <b th:text="${#temporals.format(active.startAt, 'HH:mm:ss')}">00:00:00</b></span>
+                <span class="ms-3">予定
+          <b th:with="m=${active.focusMinutes}, h=${m/60}, r=${m%60}"
+             th:text="${h>0} ? (${r>0} ? ${h} + '時間' + ${r} + '分' : ${h} + '時間') : ${m} + '分'">25分</b>
         </span>
-    </span>
-        <span th:if="${active == null}">現在、起動中のタイマーはありません。</span>
+            </div>
+            <div th:if="${active == null}">
+                <span class="chip">待機中</span>
+                <span class="ms-2 muted">現在、起動中のタイマーはありません</span>
+            </div>
+        </div>
     </div>
 
-    <form th:method="post" th:action="@{timer/start}" th:object="${timerForm}">
-        <div>
-            <label for="subjectInput">科目</label>
-            <select id="subjectInput" th:field="*{subjectId}">
-                <option value="" th:text="'（選択してください）'"></option>
-                <option th:each="subject : ${subjects}" th:value="${subject.subjectId}" th:text="${subject.name}"></option>
-            </select>
+    <!-- 開始フォーム -->
+    <div class="card card-soft mb-3">
+        <div class="card-body">
+            <form th:method="post" th:action="@{/timer/start}" th:object="${timerForm}" class="row g-3">
+                <div class="col-md-6">
+                    <label for="subjectInput" class="form-label">科目</label>
+                    <select id="subjectInput" class="form-select" th:field="*{subjectId}">
+                        <option value="">（選択してください）</option>
+                        <option th:each="subject : ${subjects}"
+                                th:value="${subject.subjectId}"
+                                th:text="${subject.name}">
+                        </option>
+                    </select>
+                    <div class="text-danger small" th:errors="*{subjectId}"></div>
+                </div>
+                <div class="col-md-3">
+                    <label for="focusInput" class="form-label">集中時間（分）</label>
+                    <input type="number" id="focusInput" class="form-control" th:field="*{focusMinutes}" min="1" placeholder="25">
+                </div>
+                <div class="col-md-3">
+                    <label for="breakInput" class="form-label">休憩時間（分）</label>
+                    <input type="number" id="breakInput" class="form-control" th:field="*{breakMinutes}" min="0" placeholder="5">
+                </div>
+                <div class="col-12 d-flex gap-2">
+                    <button class="btn btn-primary btn-wide"
+                            th:disabled="${active != null}"
+                            onclick="this.disabled=true; this.form.submit();">開始</button>
+                    <span class="muted align-self-center">※ 二重起動はできません。起動中は「開始」は無効です。</span>
+                </div>
+            </form>
         </div>
-        <div>
-            <label for="focusInput">集中時間(分)</label>
-            <input type="number" id="focusInput" th:value="*{focusMinutes}" min="1">
-        </div>
-        <div>
-            <label for="breakInput">休憩時間(分)</label>
-            <input type="number" id="breakInput" th:value="*{breakMinutes}" min="0">
-        </div>
-        <div>
-            <button th:disabled="${active != null}">開始</button>
-        </div>
-        <small class="text-muted">※ 二重起動不可。起動中は「開始」ボタンが無効になります。</small>
-    </form>
-
-    <div>
-        <form th:method="post" th:action="@{timer/stop}">
-            <button class="btn btn-danger" th:disabled="${active == null}">作業停止</button>
-        </form>
-        <form th:method="post" th:action="@{timer/break/start}">
-            <button class="btn btn-secondary" th:disabled="${active == null}">休憩開始</button>
-        </form>
-        <form th:method="post" th:action="@{timer/break/stop}">
-            <button class="btn btn-outline-secondary" th:disabled="${active == null}">休憩停止</button>
-        </form>
     </div>
+
+    <!-- アクション -->
+    <div class="card card-soft">
+        <div class="card-body d-flex flex-wrap gap-2">
+            <form th:method="post" th:action="@{/timer/stop}">
+                <button class="btn btn-danger btn-wide" th:disabled="${active == null}">作業停止</button>
+            </form>
+            <form th:method="post" th:action="@{/timer/break/start}">
+                <button class="btn btn-outline-secondary btn-wide" th:disabled="${active == null}">休憩開始</button>
+            </form>
+            <form th:method="post" th:action="@{/timer/break/stop}">
+                <button class="btn btn-outline-secondary btn-wide" th:disabled="${active == null}">休憩停止</button>
+            </form>
+        </div>
+    </div>
+
 </section>
 </body>
 </html>

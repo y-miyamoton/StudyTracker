@@ -3,49 +3,75 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}"
->
+      th:with="activePage='logs'">
 <head>
-    <title th:text="ログ作成"></title>
+    <title>ログ作成</title>
+    <style>
+        .card-soft { border:0; border-radius:1rem; box-shadow:0 6px 20px rgba(0,0,0,.06); }
+        .page-title { font-weight:600; }
+    </style>
 </head>
 <body>
 <section layout:fragment="content">
-    <form th:action="@{/logs}"
-          th:method="post"
-          th:object="${logForm}">
-        <div>
-            <label for="subjectInput">科目</label>
-            <select class="form-select" id="subjectInput" th:field="*{subjectId}">
-                <option th:each="subject : ${subjects}" th:value="${subject.subjectId}" th:text="${subject.name}"></option>
-            </select>
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h4 page-title mb-0">ログ作成</h1>
+        <a th:href="@{/logs}" class="btn btn-outline-secondary">一覧へ戻る</a>
+    </div>
+
+    <div class="card card-soft">
+        <div class="card-body">
+            <form th:action="@{/logs}" th:method="post" th:object="${logForm}">
+                <div class="row g-3">
+                    <!-- 科目 -->
+                    <div class="col-md-6">
+                        <label for="subjectInput" class="form-label">科目 *</label>
+                        <select class="form-select" id="subjectInput" th:field="*{subjectId}" required>
+                            <option value="" th:text="'（選択してください）'"
+                                    th:selected="${logForm.subjectId} == null">（選択してください）</option>
+                            <option th:each="subject : ${subjects}"
+                                    th:value="${subject.subjectId}"
+                                    th:text="${subject.name}">
+                            </option>
+                        </select>
+                        <div class="form-text text-danger" th:if="${#fields.hasErrors('subjectId')}"
+                             th:errors="*{subjectId}">科目は必須です</div>
+                    </div>
+
+                    <!-- 開始 -->
+                    <div class="col-md-3">
+                        <label for="startInput" class="form-label">開始 *</label>
+                        <input type="datetime-local" id="startInput" class="form-control" th:field="*{startAt}" required>
+                        <div class="form-text text-danger" th:if="${#fields.hasErrors('startAt')}"
+                             th:errors="*{startAt}">開始の形式が正しくありません</div>
+                    </div>
+
+                    <!-- 終了 -->
+                    <div class="col-md-3">
+                        <label for="endInput" class="form-label">終了 *</label>
+                        <input type="datetime-local" id="endInput" class="form-control" th:field="*{endAt}" required>
+                        <div class="form-text text-danger" th:if="${#fields.hasErrors('endAt')}"
+                             th:errors="*{endAt}">終了の形式が正しくありません</div>
+                        <div class="form-text text-danger" th:if="${#fields.hasGlobalErrors()}"
+                             th:errors="*{timeRangeValid}">終了は開始より後にしてください</div>
+                    </div>
+
+                    <!-- メモ -->
+                    <div class="col-12">
+                        <label for="memoInput" class="form-label">メモ（任意）</label>
+                        <textarea id="memoInput" class="form-control" th:field="*{memo}" rows="3"
+                                  placeholder="学んだ内容や気づきなど"></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">作成</button>
+                    <a th:href="@{/logs}" class="btn btn-outline-secondary">キャンセル</a>
+                </div>
+            </form>
         </div>
-        <div>
-            <label>タグ</label>
-            <div th:each="tag : ${tags}">
-                <label>
-                    <input type="checkbox"
-                           th:value="${tag.tagId}"
-                           th:field="*{tagIds}" /> <!-- ←★List<Long> にバインド -->
-                    <span th:text="${tag.name}"></span>
-                </label>
-            </div>
-        </div>
-        <div>
-            <label for="startInput">開始</label>
-            <input type="datetime-local" id="startInput" th:field="*{startAt}">
-        </div>
-        <div>
-            <label for="endInput">終了</label>
-            <input type="datetime-local" id="endInput" th:field="*{endAt}">
-        </div>
-        <div>
-            <label for="memoInput">メモ</label>
-            <textarea id="memoInput" th:field="*{memo}"></textarea>
-        </div>
-        <div>
-            <button type="submit" class="btn btn-primary" th:text="作成"></button>
-            <a th:href="@{/logs}"  class="btn btn-secondary">戻る</a>
-        </div>
-    </form>
+    </div>
+
 </section>
 </body>
 </html>

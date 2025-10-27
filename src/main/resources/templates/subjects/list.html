@@ -3,34 +3,57 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}"
->
+      th:with="activePage='subjects'">
 <head>
     <title>科目一覧</title>
+    <style>
+        .subject-tile {
+          border-radius: 1rem;
+          overflow: hidden;
+          box-shadow: 0 6px 20px rgba(0,0,0,.06);
+          border: 0;
+          min-height: 120px;
+        }
+        .subject-body {
+          background: rgba(255,255,255,.85);
+          backdrop-filter: saturate(1.2) blur(2px);
+          border-radius: .75rem;
+        }
+        .page-title { font-weight: 600; }
+    </style>
 </head>
 <body>
 <section layout:fragment="content">
-<h1>一覧</h1>
-<a th:href="@{/}">戻る</a>
-<div>
-    <a th:href="@{/subjects/creationForm}" class="btn btn-primary">作成</a>
-</div>
-<div>
-    <table>
-        <thead>
-        <tr>
-            <th>name</th>
-            <th>color code</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="subject : ${subjects}" th:object="${subject}">
-            <td><a th:href="@{/subjects/{subjectId}(subjectId=*{subjectId})}" th:text="*{name}"></a></td>
-            <td><a th:href="@{/subjects/{subjectId}(subjectId=*{subjectId})}" th:text="*{colorCode}"></a></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+
+    <!-- ヘッダー -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h4 page-title mb-0">科目一覧</h1>
+        <div class="d-flex gap-2">
+            <a th:href="@{/}" class="btn btn-outline-secondary">ダッシュボードへ</a>
+            <a th:href="@{/subjects/creationForm}" class="btn btn-primary">新規作成</a>
+        </div>
+    </div>
+
+    <!-- リスト（背景＝科目カラー） -->
+    <div class="row g-3">
+        <div class="col-12" th:if="${#lists.isEmpty(subjects)}">
+            <div class="text-center text-muted py-5">登録された科目がありません</div>
+        </div>
+
+        <div class="col-md-6 col-lg-4" th:each="subject : ${subjects}" th:object="${subject}">
+            <a class="text-decoration-none d-block subject-tile p-3"
+               th:href="@{/subjects/{subjectId}(subjectId=*{subjectId})}"
+               th:style="'background:' + (*{colorCode} ?: '#e9ecef')">
+                <div class="subject-body p-3">
+                    <h2 class="h5 mb-2 text-dark" th:text="*{name}">科目名</h2>
+                    <div class="text-muted" th:text="*{description} ?: '（説明は登録されていません）'">
+                        （説明は登録されていません）
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
 </section>
 </body>
 </html>

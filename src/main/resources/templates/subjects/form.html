@@ -3,32 +3,119 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}"
->
+      th:with="activePage='subjects'">
 <head>
-    <title th:text="${mode == 'CREATE'} ? '科目作成' : '科目編集'"></title>
+    <title th:text="${mode == 'CREATE'} ? '科目作成' : '科目編集'">科目</title>
+    <style>
+        .card-soft { border:0; border-radius:1rem; box-shadow:0 6px 20px rgba(0,0,0,.06); }
+        .page-title { font-weight:600; }
+    </style>
 </head>
 <body>
 <section layout:fragment="content">
-    <form th:action="${mode == 'CREATE'} ? @{/subjects} : @{/subjects/{subjectId}(subjectId=${subjectId})}"
-          th:method="${mode == 'CREATE'} ? post : put"
-          th:object="${subjectForm}">
-        <div>
-            <label for="nameInput">名前</label>
-            <input type="text" id="nameInput" th:field="*{name}">
+
+    <!-- ヘッダー -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h4 page-title mb-0" th:text="${mode == 'CREATE'} ? '科目作成' : '科目編集'">科目作成</h1>
+        <div class="d-flex gap-2">
+            <a th:href="@{/subjects}" class="btn btn-outline-secondary">一覧へ戻る</a>
+            <!-- 編集時のみ詳細ページへ戻るが必要なら有効化
+            <a th:if="${mode != 'CREATE'}"
+               th:href="@{/subjects/{subjectId}(subjectId=${subjectId})}"
+               class="btn btn-outline-secondary">詳細へ</a>
+            -->
         </div>
-        <div>
-            <label for="colorCodeInput">カラーコード</label>
-            <input type="text" id="colorCodeInput" th:field="*{colorCode}">
+    </div>
+
+    <!-- フォームカード -->
+    <div class="card card-soft">
+        <div class="card-body">
+            <form
+                    th:action="${mode == 'CREATE'} ? @{/subjects} : @{/subjects/{subjectId}(subjectId=${subjectId})}"
+                    th:method="${mode == 'CREATE'} ? post : put"
+                    th:object="${subjectForm}"
+                    class="row g-3 needs-validation" novalidate>
+
+                <!-- 名前 -->
+                <div class="col-12">
+                    <label for="nameInput" class="form-label">名前 <span class="text-danger">*</span></label>
+                    <input type="text" id="nameInput" th:field="*{name}"
+                           class="form-control"
+                           placeholder="例）Java / SQL / Spring"
+                           required>
+                    <div class="form-text">科目名を入力してください。</div>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}"
+                         th:errors="*{name}">名前にエラー</div>
+                </div>
+
+                <!-- カラーコード -->
+                <div class="col-md-6">
+                    <label for="colorCodeInput" class="form-label">カラー</label>
+                    <!-- HTML5 カラーピッカー（#RRGGBB を保持） -->
+                    <input type="color" id="colorCodeInput"
+                           class="form-control form-control-color"
+                           th:value="*{colorCode} ?: '#6C757D'"
+                           name="colorCode">
+                    <div class="form-text">一覧での識別に使われます（任意）。</div>
+                </div>
+
+                <!-- カラーコードを直接入力したい場合（任意・同期不要なら表示しないでOK）
+                <div class="col-md-6">
+                  <label for="colorCodeText" class="form-label">カラーコード（直接入力）</label>
+                  <input type="text" id="colorCodeText"
+                         class="form-control"
+                         th:field="*{colorCode}"
+                         placeholder="#RRGGBB"
+                         pattern="^#([A-Fa-f0-9]{6})$">
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('colorCode')}"
+                       th:errors="*{colorCode}">カラーコードにエラー</div>
+                </div>
+                -->
+
+                <!-- 説明 -->
+                <div class="col-12">
+                    <label for="descriptionInput" class="form-label">詳細</label>
+                    <textarea id="descriptionInput" th:field="*{description}" rows="4"
+                              class="form-control"
+                              placeholder="メモや学習内容の補足（任意）"></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
+                         th:errors="*{description}">説明にエラー</div>
+                </div>
+
+                <!-- ボタン -->
+                <div class="col-12 d-flex gap-2 mt-2">
+                    <button type="submit" class="btn btn-primary"
+                            th:text="${mode == 'CREATE' ? '作成' : '更新'}">作成</button>
+                    <a th:href="${mode == 'CREATE'} ? @{/subjects} : @{/subjects/{subjectId}(subjectId=${subjectId})}"
+                       class="btn btn-secondary">戻る</a>
+
+                    <!-- 編集時のみ削除ボタン（必要なら） -->
+                    <form th:if="${mode != 'CREATE'}"
+                          th:action="@{/subjects/{subjectId}(subjectId=${subjectId})}"
+                          th:method="delete"
+                          onsubmit="return confirm('この科目を削除しますか？')"
+                          class="ms-auto">
+                        <button type="submit" class="btn btn-outline-danger">削除</button>
+                    </form>
+                </div>
+            </form>
         </div>
-        <div>
-            <label for="descriptionInput">詳細</label>
-            <textarea id="descriptionInput" th:field="*{description}"></textarea>
-        </div>
-        <div>
-            <button type="submit" class="btn btn-primary" th:text="${mode == 'CREATE' ? '作成' : '編集'}"></button>
-            <a th:href="${mode == 'CREATE'} ? @{/subjects} : @{/subjects/{subjectId}(subjectId=${subjectId})}"  class="btn btn^secondary">戻る</a>
-        </div>
-    </form>
+    </div>
+
 </section>
+
+<script>
+    // ブラウザ標準の required などと合わせて、Bootstrap風の見た目にする小ワザ
+    (function () {
+      'use strict';
+      const forms = document.querySelectorAll('.needs-validation');
+      Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) { event.preventDefault(); event.stopPropagation(); }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+</script>
 </body>
 </html>

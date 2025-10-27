@@ -53,6 +53,12 @@ public class LogController {
                         SubjectEntity::subjectId,
                         SubjectEntity::name
                 ));
+        var colorById = subjectService.findActive()
+                .stream()
+                .collect(Collectors.toMap(
+                        SubjectEntity::subjectId,
+                        SubjectEntity::colorCode
+                ));
         var logList = logService.findByPeriod(fromDateTime, toDateTime, subjectId)
                 .stream()
                 .map(logEntity -> LogDTO.toDTO(logEntity, nameById.getOrDefault(logEntity.subjectId(), "(不明な科目)")))
@@ -62,6 +68,7 @@ public class LogController {
         model.addAttribute("from", from);
         model.addAttribute("to", to);
         model.addAttribute("subjectId", subjectId);
+        
         return "logs/list";
     }
 

@@ -3,29 +3,63 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}"
->
+      th:with="activePage='subjects'">
 <head>
     <title>科目詳細</title>
+    <style>
+        .card-soft { border:0; border-radius:1rem; box-shadow:0 6px 20px rgba(0,0,0,.06); }
+        .color-dot {
+          width: 18px; height: 18px; border-radius: 50%;
+          display: inline-block; vertical-align: middle; border: 1px solid rgba(0,0,0,.1);
+          margin-right: .5rem;
+        }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    </style>
 </head>
 <body>
-<section layout:fragment="content">
-    <h1>科目詳細</h1>
-    <a th:href="@{/subjects}">科目一覧に戻る</a>
-    <div>
-        <a th:href="@{/subjects/{subjectId}/editForm(subjectId=${subjectId})}" class="btn btn-primary">編集</a>
-        <form
-                th:action="@{/subjects/{subjectId}(subjectId=${subjectId})}"
-                th:method="delete"
-                onclick="return confirm('削除しますか')"
-        >
-            <button type="submit">削除</button>
-        </form>
+<section layout:fragment="content" th:object="${subject}">
+
+    <!-- ヘッダー & アクション -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h1 class="h4 mb-1">科目詳細</h1>
+            <div class="text-muted">基本情報とカラー設定</div>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/subjects}" class="btn btn-outline-secondary">一覧に戻る</a>
+            <a th:href="@{/subjects/{subjectId}/editForm(subjectId=${subjectId})}" class="btn btn-primary">編集</a>
+            <form th:action="@{/subjects/{subjectId}(subjectId=${subjectId})}"
+                  th:method="delete"
+                  onsubmit="return confirm('この科目を削除しますか？');">
+                <button type="submit" class="btn btn-outline-danger">削除</button>
+            </form>
+        </div>
     </div>
-    <div th:object="${subject}">
-        <h2 th:text="*{name}"></h2>
-        <p th:text="*{colorCode}"></p>
-        <pre th:text="*{description}"></pre>
+
+    <!-- 本文カード -->
+    <div class="card card-soft">
+        <div class="card-body">
+            <!-- 名前行 -->
+            <div class="d-flex align-items-center justify-content-between">
+                <h2 class="h4 mb-0" th:text="*{name}">科目名</h2>
+                <div class="d-flex align-items-center">
+                    <span class="color-dot" th:style="'background-color:' + (*{colorCode} ?: '#6C757D')"></span>
+                    <span class="mono small text-muted" th:text="*{colorCode} ?: '#6C757D'">#6C757D</span>
+                </div>
+            </div>
+
+            <hr class="my-3">
+
+            <!-- 説明 -->
+            <div>
+                <div class="text-muted mb-1">詳細</div>
+                <div class="p-3 bg-light rounded" th:text="*{description} ?: '（説明は登録されていません）'">
+                    （説明は登録されていません）
+                </div>
+            </div>
+        </div>
     </div>
+
 </section>
 </body>
 </html>

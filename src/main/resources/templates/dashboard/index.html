@@ -3,75 +3,114 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}"
->
+      th:with="activePage='home'">
 <head>
     <title>ダッシュボード</title>
+    <style>
+        /* さりげない微調整だけ */
+        .stat-card .title { font-size: .95rem; color: #6c757d; }
+        .stat-card .value { font-weight: 700; letter-spacing: .5px; }
+        .muted { color: #6c757d; }
+        .chip { display:inline-block; padding:.25rem .5rem; border-radius:999px; background:#f1f3f5; font-size:.8rem;}
+    </style>
 </head>
 <body>
-<section layout:fragment="content">
+<section layout:fragment="content" th:object="${dashboard}">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h1 class="h4 mb-1">ダッシュボード</h1>
+            <div class="muted">学習状況のサマリーと科目別の内訳</div>
+        </div>
+    </div>
 
-    <div class="row g-3" th:object="${dashboard}">
+    <div class="row g-3">
         <div class="col-md-4">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm stat-card position-relative">
                 <div class="card-body">
-                    <h5>今日の学習時間</h5>
-                    <p class="display-6"
-                       th:with="m=*{todayMinutes}, h=${m/60}, r=${m%60}"
-                       th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</p>
+                    <div class="title mb-1">今日の学習時間</div>
+                    <div class="value display-6"
+                         th:with="m=*{todayMinutes}, h=${m/60}, r=${m%60}"
+                         th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</div>
                 </div>
+                <a class="stretched-link"
+                   th:href="@{/logs(from=${#temporals.format(today, 'yyyy-MM-dd')}, to=${#temporals.format(today, 'yyyy-MM-dd')})}"></a>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm stat-card position-relative">
                 <div class="card-body">
-                    <h5>今週の学習時間</h5>
-                    <p class="display-6"
-                       th:with="m=*{weekMinutes}, h=${m/60}, r=${m%60}"
-                       th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</p>
+                    <div class="title mb-1">今週の学習時間</div>
+                    <div class="value display-6"
+                         th:with="m=*{weekMinutes}, h=${m/60}, r=${m%60}"
+                         th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</div>
                 </div>
+                <a class="stretched-link"
+                   th:href="@{/logs(from=${#temporals.format(weekFrom, 'yyyy-MM-dd')}, to=${#temporals.format(weekTo,'yyyy-MM-dd')})}"></a>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm stat-card position-relative">
                 <div class="card-body">
-                    <h5>今月の学習時間</h5>
-                    <p class="display-6"
-                       th:with="m=*{monthMinutes}, h=${m/60}, r=${m%60}"
-                       th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</p>
+                    <div class="title mb-1">今月の学習時間</div>
+                    <div class="value display-6"
+                         th:with="m=*{monthMinutes}, h=${m/60}, r=${m%60}"
+                         th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</div>
                 </div>
+                <a class="stretched-link"
+                   th:href="@{/logs(from=${#temporals.format(monthFrom, 'yyyy-MM-dd')}, to=${#temporals.format(monthTo, 'yyyy-MM-dd')})}"></a>
             </div>
         </div>
     </div>
 
-    <div class="d-flex gap-2 mb-2">
-        <a class="btn btn-sm"
-           th:classappend="${range}=='day' ? 'btn-primary' : 'btn-outline-primary'"
-           th:href="@{/?range=day}">今日</a>
-        <a class="btn btn-sm"
-           th:classappend="${range}=='week' ? 'btn-primary' : 'btn-outline-primary'"
-           th:href="@{/?range=week}">今週</a>
-        <a class="btn btn-sm"
-           th:classappend="${range}=='month' ? 'btn-primary' : 'btn-outline-primary'"
-           th:href="@{/?range=month}">今月</a>
+    <div class="d-flex align-items-center justify-content-between mt-4 mb-2">
+        <h5 class="mb-0"
+            th:text="${range}=='day' ? '科目別（今日）' : (${range}=='week' ? '科目別（今週）' : '科目別（今月）')">
+            科目別
+        </h5>
+        <div class="btn-group">
+            <a class="btn btn-sm"
+               th:classappend="${range}=='day' ? 'btn-primary' : 'btn-outline-primary'"
+               th:href="@{/?range=day}">今日</a>
+            <a class="btn btn-sm"
+               th:classappend="${range}=='week' ? 'btn-primary' : 'btn-outline-primary'"
+               th:href="@{/?range=week}">今週</a>
+            <a class="btn btn-sm"
+               th:classappend="${range}=='month' ? 'btn-primary' : 'btn-outline-primary'"
+               th:href="@{/?range=month}">今月</a>
+        </div>
     </div>
 
-    <h5 th:text="${range}=='day' ? '科目別（今日）' : (${range}=='week' ? '科目別（今週）' : '科目別（今月）')"></h5>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width:60%">科目</th>
+                        <th class="text-end" style="width:40%">合計</th>
+                    </tr>
+                    </thead>
+                    <tbody th:with="list=${range}=='day' ? ${minutes.byDay} : (${range}=='week' ? ${minutes.byWeek} : ${minutes.byMonth})">
+                    <tr th:if="${#lists.isEmpty(list)}">
+                        <td colspan="2" class="text-center py-4">
+                            <span class="chip">データがありません</span>
+                        </td>
+                    </tr>
 
-    <table class="table table-sm">
-        <thead>
-        <tr><th>科目</th><th class="text-end">合計</th></tr>
-        </thead>
-        <tbody>
-        <tr th:each="row : ${range}=='day' ? ${minutes.byDay}
-                            : (${range}=='week' ? ${minutes.byWeek} : ${minutes.byMonth})">
-            <td th:text="${row.subjectName}"></td>
-            <td class="text-end"
-                th:with="m=${row.totalMinutes}, h=${m/60}, r=${m%60}"
-                th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間')
-                       : ${m} + ' 分'">0 分</td>
-        </tr>
-        </tbody>
-    </table>
+                    <tr th:each="row : ${list}">
+                        <td>
+                            <div class="fw-semibold" th:text="${row.subjectName}">科目名</div>
+                        </td>
+                        <td class="text-end"
+                            th:with="m=${row.totalMinutes}, h=${m/60}, r=${m%60}"
+                            th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 </section>
 </body>
 </html>

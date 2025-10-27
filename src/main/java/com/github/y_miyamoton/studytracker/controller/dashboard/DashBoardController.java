@@ -51,6 +51,11 @@ public class DashBoardController {
         model.addAttribute("dashboard", dashboardDTO);
         model.addAttribute("minutes", minutesDTO);
         model.addAttribute("range", range);
+        model.addAttribute("today", todayStart);
+        model.addAttribute("weekFrom", weekStart);
+        model.addAttribute("weekTo", weekEnd);
+        model.addAttribute("monthFrom", monthStart);
+        model.addAttribute("monthTo", monthEnd);
         return "dashboard/index";
     }
 }
