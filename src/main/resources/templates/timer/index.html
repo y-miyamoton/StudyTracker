@@ -13,7 +13,10 @@
     <span th:if="${active != null}">
       起動中：タイマーID <b th:text="${active.timerId}"></b>
       ／ 開始 <span th:text="${#temporals.format(active.startAt, 'HH:mm:ss')}"></span>
-      ／ 予定 <span th:text="${active.focusMinutes}"></span> 分
+      ／ 予定
+        <span th:with="m=${active.focusMinutes}, h=${m / 60}, r=${m % 60}"
+              th:text="${h > 0} ? (${r > 0} ? ${h} + '時間' + ${r} + '分' : ${h} + '時間') : ${m} + '分'">
+        </span>
     </span>
         <span th:if="${active == null}">現在、起動中のタイマーはありません。</span>
     </div>

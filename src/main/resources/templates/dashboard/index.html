@@ -15,7 +15,9 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5>今日の学習時間</h5>
-                    <p class="display-6" th:text="*{todayMinutes} + ' 分'">0 分</p>
+                    <p class="display-6"
+                       th:with="m=*{todayMinutes}, h=${m/60}, r=${m%60}"
+                       th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</p>
                 </div>
             </div>
         </div>
@@ -23,7 +25,9 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5>今週の学習時間</h5>
-                    <p class="display-6" th:text="*{weekMinutes} + ' 分'">0 分</p>
+                    <p class="display-6"
+                       th:with="m=*{weekMinutes}, h=${m/60}, r=${m%60}"
+                       th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</p>
                 </div>
             </div>
         </div>
@@ -31,30 +35,43 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5>今月の学習時間</h5>
-                    <p class="display-6" th:text="*{monthMinutes} + ' 分'">0 分</p>
+                    <p class="display-6"
+                       th:with="m=*{monthMinutes}, h=${m/60}, r=${m%60}"
+                       th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row g-3 mt-3" th:object="${dashboard}">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5>科目別（今月）</h5>
-                    <table class="table table-sm">
-                        <thead><tr><th>科目</th><th class="text-end">合計(分)</th></tr></thead>
-                        <tbody>
-                        <tr th:each="row : ${dashboard.bySubject}">
-                            <td th:text="${row.subjectName}"></td>
-                            <td class="text-end" th:text="${row.totalMinutes}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div class="d-flex gap-2 mb-2">
+        <a class="btn btn-sm"
+           th:classappend="${range}=='day' ? 'btn-primary' : 'btn-outline-primary'"
+           th:href="@{/?range=day}">今日</a>
+        <a class="btn btn-sm"
+           th:classappend="${range}=='week' ? 'btn-primary' : 'btn-outline-primary'"
+           th:href="@{/?range=week}">今週</a>
+        <a class="btn btn-sm"
+           th:classappend="${range}=='month' ? 'btn-primary' : 'btn-outline-primary'"
+           th:href="@{/?range=month}">今月</a>
     </div>
+
+    <h5 th:text="${range}=='day' ? '科目別（今日）' : (${range}=='week' ? '科目別（今週）' : '科目別（今月）')"></h5>
+
+    <table class="table table-sm">
+        <thead>
+        <tr><th>科目</th><th class="text-end">合計</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${range}=='day' ? ${minutes.byDay}
+                            : (${range}=='week' ? ${minutes.byWeek} : ${minutes.byMonth})">
+            <td th:text="${row.subjectName}"></td>
+            <td class="text-end"
+                th:with="m=${row.totalMinutes}, h=${m/60}, r=${m%60}"
+                th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間')
+                       : ${m} + ' 分'">0 分</td>
+        </tr>
+        </tbody>
+    </table>
 </section>
 </body>
 </html>

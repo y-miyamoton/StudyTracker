@@ -11,6 +11,7 @@ public class AppAuditService {
     private final AppAuditRepository appAuditRepository;
 
     public void log(Long userId, String action, String entity, Long entityId, String detail) {
+        System.out.println("[AUDIT] " + action + " on " + entity + " (ID=" + entityId + ")");
         appAuditRepository.insert(userId, action, entity, entityId, detail);
     }
 }
