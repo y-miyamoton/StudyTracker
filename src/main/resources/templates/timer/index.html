@@ -8,10 +8,30 @@
     <title>ポモドーロ</title>
     <style>
         .card-soft { border:0; border-radius:1rem; box-shadow:0 6px 20px rgba(0,0,0,.06); }
-        .stat { font-weight:600; }
-        .muted { color: #6c757d; }
-        .chip { display:inline-block; padding:.25rem .5rem; border-radius:999px; background:#f1f3f5; font-size:.85rem; }
+        .muted { color:#6c757d; }
         .btn-wide { min-width: 8rem; }
+
+        /* ---- シンプル＆スタイリッシュ ---- */
+        .focus-status { background: #fff; border-radius: 1.25rem; }
+        .time-card    { max-width: 760px; margin-inline:auto; padding: 2rem 1.25rem; }
+        .time-card .time-range { font-weight: 800; letter-spacing: .5px; }
+        .time-card .time-range .sep { color:#adb5bd; margin: 0 .65rem; }
+        .time-card .sub { color:#6c757d; }
+
+        /* 細い単色の進捗バー */
+        .progress-wrap {
+          height: 6px;                 /* ← 細く */
+          border-radius: 999px;
+          background: #e9ecef;         /* ライトグレー */
+          overflow: hidden;
+          margin-top: 1rem;
+        }
+        .progress-bar {
+          height: 100%;
+          width: 0;                    /* 初期は0。inline styleで現在%とアニメ時間を付与 */
+          background: #0d6efd;         /* 単色（Bootstrapのprimary） */
+        }
+        @keyframes fillToEnd { to { width: 100%; } }
     </style>
 </head>
 <body>
@@ -22,25 +42,6 @@
         <div>
             <h1 class="h4 mb-1">ポモドーロ</h1>
             <div class="muted">集中と休憩を切り替えて、学習ログを自動記録します</div>
-        </div>
-    </div>
-
-    <!-- ステータス -->
-    <div class="card card-soft mb-3">
-        <div class="card-body d-flex flex-wrap align-items-center gap-3">
-            <div th:if="${active != null}">
-                <span class="chip">起動中</span>
-                <span class="ms-2">タイマーID <b th:text="${active.timerId}">1</b></span>
-                <span class="ms-3">開始 <b th:text="${#temporals.format(active.startAt, 'HH:mm:ss')}">00:00:00</b></span>
-                <span class="ms-3">予定
-          <b th:with="m=${active.focusMinutes}, h=${m/60}, r=${m%60}"
-             th:text="${h>0} ? (${r>0} ? ${h} + '時間' + ${r} + '分' : ${h} + '時間') : ${m} + '分'">25分</b>
-        </span>
-            </div>
-            <div th:if="${active == null}">
-                <span class="chip">待機中</span>
-                <span class="ms-2 muted">現在、起動中のタイマーはありません</span>
-            </div>
         </div>
     </div>
 
@@ -74,6 +75,36 @@
                     <span class="muted align-self-center">※ 二重起動はできません。起動中は「開始」は無効です。</span>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ステータス（待機中 or 作業中） -->
+    <div class="card card-soft mb-4 focus-status">
+        <!-- 作業中 -->
+        <div class="card-body time-card" th:if="${active != null}">
+            <!-- 大きく中央配置の時刻カード -->
+            <div class="text-center">
+                <div class="display-3 time-range">
+                    <span th:text="${#temporals.format(active.startAt, 'HH:mm')}">09:00</span>
+                    <span class="sep">→</span>
+                    <span th:text="${#temporals.format(targetAt, 'HH:mm')}">09:25</span>
+                </div>
+            </div>
+
+            <!-- 細い単色の進捗バー -->
+            <div class="progress-wrap mx-auto" style="max-width: 640px;">
+                <div class="progress-bar"
+                     th:style="'width:' + ${percent} + '%;'
+                    + 'animation: fillToEnd ' + ${remainingSec} + 's linear forwards;'">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 待機中 -->
+        <div class="card-body time-card text-center" th:if="${active == null}">
+            <div class="display-6 fw-bold text-muted">待機中</div>
+            <div class="sub">集中を開始するとここにタイマーが表示されます</div>
         </div>
     </div>
 
