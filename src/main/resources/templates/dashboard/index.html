@@ -81,29 +81,48 @@
     </div>
 
     <div class="card shadow-sm">
+        <style>
+            .table-soft thead th { font-weight:600; }
+            .subject-row { background:#fcfcfc; }                /* ベース背景は淡色 */
+            .subject-dot {
+              display:inline-block; width:0.9rem; height:0.9rem;
+              border-radius:999px; box-shadow:0 0 0 1px rgba(0,0,0,.08) inset;
+              margin-right:.5rem;
+            }
+            .sticky-head thead th { position:sticky; top:0; z-index:1; }
+        </style>
+
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-sm table-hover align-middle mb-0">
+                <table class="table table-sm table-hover table-soft align-middle mb-0 sticky-head">
                     <thead class="table-light">
                     <tr>
                         <th style="width:60%">科目</th>
                         <th class="text-end" style="width:40%">合計</th>
                     </tr>
                     </thead>
-                    <tbody th:with="list=${range}=='day' ? ${minutes.byDay} : (${range}=='week' ? ${minutes.byWeek} : ${minutes.byMonth})">
+
+                    <tbody th:with="list=${range}=='day' ? ${minutes.byDay}
+                      : (${range}=='week' ? ${minutes.byWeek} : ${minutes.byMonth})">
                     <tr th:if="${#lists.isEmpty(list)}">
-                        <td colspan="2" class="text-center py-4">
-                            <span class="chip">データがありません</span>
-                        </td>
+                        <td colspan="2" class="text-center py-4 text-muted">データがありません</td>
                     </tr>
 
-                    <tr th:each="row : ${list}">
+                    <tr th:each="row : ${list}"
+                        class="subject-row position-relative"
+                        th:with="col=${row.colorCode != null ? row.colorCode : '#e9ecef'}, f=${range}=='day'  ? ${today} : (${range}=='week' ? ${weekFrom} : ${monthFrom}), t=${range}=='day' ? ${today} : (${range}=='week' ? ${weekTo}   : ${monthTo})"
+                        th:style="'border-left:6px solid ' + ${col}">
                         <td>
-                            <div class="fw-semibold" th:text="${row.subjectName}">科目名</div>
+                            <span class="subject-dot" th:style="'background:' + ${col}"></span>
+                            <a class="stretched-link link-dark text-decoration-none fw-semibold"
+                               th:text="${row.subjectName}"
+                               th:href="@{/logs(from=${#temporals.format(f,'yyyy-MM-dd')}, to=${#temporals.format(t,'yyyy-MM-dd')}, subjectId=${row.subjectId})}"></a>
                         </td>
                         <td class="text-end"
                             th:with="m=${row.totalMinutes}, h=${m/60}, r=${m%60}"
-                            th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">0 分</td>
+                            th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間') : ${m} + ' 分'">
+                            0 分
+                        </td>
                     </tr>
                     </tbody>
                 </table>

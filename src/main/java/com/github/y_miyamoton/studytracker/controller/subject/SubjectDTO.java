@@ -14,6 +14,7 @@ public record SubjectDTO(
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
+
     public static SubjectDTO toDTO(SubjectEntity entity) {
         return new SubjectDTO(
                 entity.subjectId(),

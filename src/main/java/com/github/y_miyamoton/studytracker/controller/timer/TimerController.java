@@ -65,7 +65,7 @@ public class TimerController {
         var newLog = timerDTO.toLogAt(endAt, "自動登録：ポモドーロタイマー");
         logService.create(newLog);
         timerService.stopFocus();
-        return "redirect:/timer";
+        return "redirect:/logs";
     }
 
     @PostMapping("/break/start")

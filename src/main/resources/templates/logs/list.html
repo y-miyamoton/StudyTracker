@@ -84,7 +84,8 @@
 
                     <!-- 行 -->
                     <tr th:each="log : ${logs}" th:object="${log}" class="row-link"
-                        th:with="s=*{startAt}, e=*{endAt}, m=*{minutes}, h=${m/60}, r=${m%60}">
+                        th:with="s=*{startAt}, e=*{endAt}, m=*{minutes}, h=${m/60}, r=${m%60}"
+                        th:style="'background:#fcfcfc; border-left:6px solid ' + (*{colorCode} != null ? *{colorCode} : '#e9ecef')">
                         <td>
                             <a th:href="@{/logs/{logId}(logId=*{logId})}" class="stretched-link"></a>
                             <div class="fw-semibold" th:text="*{name}">科目名</div>
@@ -92,7 +93,7 @@
                                  th:text="${#temporals.format(s, 'yyyy/MM/dd')}">2025/10/27</div>
                         </td>
                         <td class="text-end">
-              <span th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間')
+                            <span th:text="${h>0} ? (${r>0} ? ${h} + ' 時間 ' + ${r} + ' 分' : ${h} + ' 時間')
                                 : ${m} + ' 分'">0 分</span>
                         </td>
                         <td>

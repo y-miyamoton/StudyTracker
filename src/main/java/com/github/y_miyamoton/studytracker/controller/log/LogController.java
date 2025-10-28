@@ -47,28 +47,29 @@ public class LogController {
         }
         var fromDateTime = from.atStartOfDay(); // 00:00
         var toDateTime = to.atTime(23, 59, 59); // 23:59:59
-        var nameById = subjectService.findActive()
-                .stream()
+
+        var subjects = subjectService.findActive();
+        var subjectMap = subjects.stream()
                 .collect(Collectors.toMap(
                         SubjectEntity::subjectId,
-                        SubjectEntity::name
+                        SubjectDTO::toDTO
                 ));
-        var colorById = subjectService.findActive()
-                .stream()
-                .collect(Collectors.toMap(
-                        SubjectEntity::subjectId,
-                        SubjectEntity::colorCode
-                ));
+
         var logList = logService.findByPeriod(fromDateTime, toDateTime, subjectId)
                 .stream()
-                .map(logEntity -> LogDTO.toDTO(logEntity, nameById.getOrDefault(logEntity.subjectId(), "(不明な科目)")))
+                .map(logEntity -> {
+                    var subject = subjectMap.get(logEntity.subjectId());
+                    var subjectName = (subject != null) ? subject.name() : "(不明な科目)";
+                    var colorCode  = (subject != null && subject.colorCode() != null) ? subject.colorCode() : "#e9ecef";
+                    return LogDTO.toDTO(logEntity, subjectName, colorCode);
+                })
                 .toList();
         model.addAttribute("logs", logList);
         model.addAttribute("subjects", subjectService.findActive());
         model.addAttribute("from", from);
         model.addAttribute("to", to);
         model.addAttribute("subjectId", subjectId);
-        
+
         return "logs/list";
     }
 
@@ -117,6 +118,11 @@ public class LogController {
             BindingResult bindingResult, Model model
     ) {
         if (bindingResult.hasErrors()) {
+            var subjectList = subjectService.findActive().stream()
+                    .map(SubjectDTO::toDTO)
+                    .toList();
+            model.addAttribute("subjects", subjectList);
+            model.addAttribute("logId", logId);
             return "logs/edit";
         }
         var entity = form.toEntity(logId, userContext.currentUserId());

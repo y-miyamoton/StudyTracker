@@ -9,6 +9,7 @@ public record LogDTO(
         Long userId,
         Long subjectId,
         String name,
+        String colorCode,
         LocalDateTime startAt,
         LocalDateTime endAt,
         Integer minutes,
@@ -22,6 +23,7 @@ public record LogDTO(
                 entity.userId(),
                 null,
                 null,
+                null,
                 entity.startAt(),
                 entity.endAt(),
                 entity.minutes(),
@@ -31,12 +33,13 @@ public record LogDTO(
         );
     }
 
-    public static LogDTO toDTO(LogEntity entity, String subjectName) {
+    public static LogDTO toDTO(LogEntity entity, String subjectName, String colorCode) {
         return new LogDTO(
                 entity.logId(),
                 entity.userId(),
                 entity.subjectId(),
                 subjectName,
+                colorCode,
                 entity.startAt(),
                 entity.endAt(),
                 entity.minutes(),
