@@ -31,7 +31,7 @@ public class LogService {
     @Transactional
     public void create(LogEntity newEntity) {
         logRepository.insert(newEntity);
-        appAuditService.log(userContext.currentUserId(), "CREATE","LOG", newEntity.logId(), "subject=" + newEntity.subjectId() + ", minutes=" + newEntity.minutes());
+        appAuditService.log(userContext.currentUserId(), "CREATE","LOG", newEntity.getLogId(), "subject=" + newEntity.getSubjectId() + ", minutes=" + newEntity.getMinutes());
     }
 
     @Transactional

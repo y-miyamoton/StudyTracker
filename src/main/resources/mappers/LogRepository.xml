@@ -22,6 +22,8 @@
 
     <insert id="insert"
             useGeneratedKeys="true"
+            keyProperty="log.logId"
+            keyColumn="id"
     >
         INSERT INTO logs (user_id, subject_id, start_at, end_at, minutes, memo, created_at, updated_at)
         VALUES (#{log.userId}, #{log.subjectId}, #{log.startAt}, #{log.endAt}, #{log.minutes}, #{log.memo}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
@@ -47,8 +49,8 @@
         SELECT COALESCE(SUM(minutes), 0)
         FROM logs
         WHERE user_id = #{userId}
-            AND start_at &gt;= #{from}
-            AND end_at   &lt;= #{to}
+            AND start_at &lt;= #{to}
+            AND end_at &gt;= #{from}
     </select>
 
     <select id="sumBySubject"
@@ -62,8 +64,8 @@
         LEFT JOIN logs l
             ON l.user_id = #{userId}
                 AND l.subject_id = s.id
-                AND l.start_at &gt;= #{from}
-                AND l.end_at &lt;= #{to}
+                AND l.start_at &lt;= #{to}
+                AND l.end_at &gt;= #{from}
         WHERE s.user_id = #{userId}
             AND s.archived = false
         GROUP BY s.id, s.name, s.color_code

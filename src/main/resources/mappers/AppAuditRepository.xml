@@ -8,7 +8,8 @@
         VALUES (#{userId}, #{action}, #{entity}, #{entityId}, #{detail}, CURRENT_TIMESTAMP)
     </insert>
 
-    <select id="recent">
+    <select id="recent"
+            resultType="com.github.y_miyamoton.studytracker.entity.AppAuditEntity">
         SELECT * FROM app_audit
         WHERE user_id = #{userId}
         ORDER BY created_at DESC

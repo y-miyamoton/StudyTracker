@@ -17,14 +17,14 @@ public record SubjectDTO(
 
     public static SubjectDTO toDTO(SubjectEntity entity) {
         return new SubjectDTO(
-                entity.subjectId(),
-                entity.userId(),
-                entity.name(),
-                entity.colorCode(),
-                entity.description(),
-                entity.archived(),
-                entity.createdAt(),
-                entity.updatedAt()
+                entity.getSubjectId(),
+                entity.getUserId(),
+                entity.getName(),
+                entity.getColorCode(),
+                entity.getDescription(),
+                entity.isArchived(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public record LogForm(
@@ -30,42 +31,37 @@ public record LogForm(
     }
 
     public LogEntity toEntity(Long userId) {
-        long minutes = java.time.Duration.between(startAt, endAt).toMinutes();
-        return new LogEntity(
-                logId(),
-                userId,
-                subjectId(),
-                startAt(),
-                endAt(),
-                (int) minutes,
-                memo(),
-                null,
-                null
-        );
+        long minutes = Duration.between(startAt, endAt).toMinutes();
+        var logEntity = new LogEntity();
+        logEntity.setUserId(userId);
+        logEntity.setSubjectId(subjectId());
+        logEntity.setStartAt(startAt());
+        logEntity.setEndAt(endAt());
+        logEntity.setMinutes((int) minutes);
+        logEntity.setMemo(memo());
+        return logEntity;
     }
 
     public LogEntity toEntity(Long logId, Long userId) {
-        long minutes = java.time.Duration.between(startAt, endAt).toMinutes();
-        return new LogEntity(
-                logId,
-                userId,
-                subjectId(),
-                startAt(),
-                endAt(),
-                (int) minutes,
-                memo(),
-                null,
-                null
-        );
+        long minutes = Duration.between(startAt, endAt).toMinutes();
+        var logEntity = new LogEntity();
+        logEntity.setLogId(logId);
+        logEntity.setUserId(userId);
+        logEntity.setSubjectId(subjectId());
+        logEntity.setStartAt(startAt());
+        logEntity.setEndAt(endAt());
+        logEntity.setMinutes((int) minutes);
+        logEntity.setMemo(memo());
+        return logEntity;
     }
 
     public static LogForm fromEntity(LogEntity logEntity) {
         return new LogForm(
-                logEntity.logId(),
-                logEntity.subjectId(),
-                logEntity.startAt(),
-                logEntity.endAt(),
-                logEntity.memo()
+                logEntity.getLogId(),
+                logEntity.getSubjectId(),
+                logEntity.getStartAt(),
+                logEntity.getEndAt(),
+                logEntity.getMemo()
         );
     }
 }

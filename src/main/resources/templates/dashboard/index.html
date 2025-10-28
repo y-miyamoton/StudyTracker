@@ -105,7 +105,9 @@
 
                     <tr th:each="row : ${list}"
                         class="subject-row position-relative"
-                        th:with="col=${row.colorCode != null ? row.colorCode : '#e9ecef'}, f=${range}=='day'  ? ${today} : (${range}=='week' ? ${weekFrom} : ${monthFrom}), t=${range}=='day' ? ${today} : (${range}=='week' ? ${weekTo}   : ${monthTo})"
+                        th:with="col=${row.colorCode != null ? row.colorCode : '#e9ecef'},
+                            f=${range}=='day' ? ${today} : (${range}=='week' ? ${weekFrom} : ${monthFrom}),
+                            t=${range}=='day' ? ${today} : (${range}=='week' ? ${weekTo} : ${monthTo})"
                         th:style="'border-left:6px solid ' + ${col}">
                         <td>
                             <span class="subject-dot" th:style="'background:' + ${col}"></span>

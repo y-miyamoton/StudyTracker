@@ -1,6 +1,7 @@
 package com.github.y_miyamoton.studytracker.service;
 
 import com.github.y_miyamoton.studytracker.config.UserContext;
+import com.github.y_miyamoton.studytracker.controller.subject.SubjectNotFoundException;
 import com.github.y_miyamoton.studytracker.entity.SubjectEntity;
 import com.github.y_miyamoton.studytracker.repository.SubjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,18 +30,24 @@ public class SubjectService {
     @Transactional
     public void create(SubjectEntity newEntity) {
         subjectRepository.insert(newEntity);
-        appAuditService.log(userContext.currentUserId(), "CREATE","SUBJECT", newEntity.subjectId(), "name=" + newEntity.name());
+        appAuditService.log(userContext.currentUserId(), "CREATE","SUBJECT", newEntity.getSubjectId(), "name=" + newEntity.getName());
     }
 
     @Transactional
     public void update(SubjectEntity entity) {
-        subjectRepository.update(entity);
-        appAuditService.log(userContext.currentUserId(), "UPDATE","SUBJECT", entity.subjectId(), "name=" + entity.name());
+        int rows = subjectRepository.update(entity);
+        if (rows == 0) {
+            throw new SubjectNotFoundException();
+        }
+        appAuditService.log(userContext.currentUserId(), "UPDATE","SUBJECT", entity.getSubjectId(), "name=" + entity.getName());
     }
 
     @Transactional
     public void archive(long subjectId) {
-        subjectRepository.archive(subjectId, userContext.currentUserId());
-        appAuditService.log(userContext.currentUserId(), "DELETE","SUBJECT", subjectId, null);
+        int rows = subjectRepository.archive(subjectId, userContext.currentUserId());
+        if (rows == 0) {
+            throw new SubjectNotFoundException();
+        }
+        appAuditService.log(userContext.currentUserId(), "ARCHIVE","SUBJECT", subjectId, null);
     }
 }

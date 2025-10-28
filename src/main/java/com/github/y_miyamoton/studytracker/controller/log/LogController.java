@@ -48,24 +48,24 @@ public class LogController {
         var fromDateTime = from.atStartOfDay();
         var toDateTime = to.atTime(23, 59, 59);
 
-        var subjects = subjectService.findActive();
-        var subjectMap = subjects.stream()
+        var subjectList = subjectService.findActive();
+        var subjectMap = subjectList.stream()
                 .collect(Collectors.toMap(
-                        SubjectEntity::subjectId,
+                        SubjectEntity::getSubjectId,
                         SubjectDTO::toDTO
                 ));
 
         var logList = logService.findByPeriod(fromDateTime, toDateTime, subjectId)
                 .stream()
                 .map(logEntity -> {
-                    var subject = subjectMap.get(logEntity.subjectId());
+                    var subject = subjectMap.get(logEntity.getSubjectId());
                     var subjectName = (subject != null) ? subject.name() : "(不明な科目)";
                     var colorCode  = (subject != null && subject.colorCode() != null) ? subject.colorCode() : "#e9ecef";
                     return LogDTO.toDTO(logEntity, subjectName, colorCode);
                 })
                 .toList();
         model.addAttribute("logs", logList);
-        model.addAttribute("subjects", subjectService.findActive());
+        model.addAttribute("subjects", subjectList);
         model.addAttribute("from", from);
         model.addAttribute("to", to);
         model.addAttribute("subjectId", subjectId);
@@ -75,12 +75,10 @@ public class LogController {
 
     @GetMapping("/{logId}")
     public String showDetail(@PathVariable("logId") long logId, Model model) {
-        var logDTO = logService.findById(logId)
-                .map(LogDTO::toDTO)
+        var logEntity = logService.findById(logId)
                 .orElseThrow(LogNotFoundException::new);
-        var form = logService.findById(logId)
-                .map(LogForm::fromEntity)
-                .orElseThrow(LogNotFoundException::new);
+        var logDTO = LogDTO.toDTO(logEntity);
+        var form = LogForm.fromEntity(logEntity);
         var subjectList = subjectService.findActive()
                 .stream()
                 .map(SubjectDTO::toDTO)

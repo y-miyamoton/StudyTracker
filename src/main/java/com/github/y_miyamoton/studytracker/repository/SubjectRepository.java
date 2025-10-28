@@ -13,6 +13,6 @@ public interface SubjectRepository {
     List<SubjectEntity> selectAllActive(@Param("userId") Long userId);
     Optional<SubjectEntity> selectById(@Param("subjectId") Long subjectId, @Param("userId") Long userId);
     void insert(@Param("subject") SubjectEntity newEntity);
-    void update(@Param("subject") SubjectEntity entity);
-    void archive(@Param("subjectId") Long subjectId, @Param("userId") Long userId);
+    int update(@Param("subject") SubjectEntity entity);
+    int archive(@Param("subjectId") Long subjectId, @Param("userId") Long userId);
 }

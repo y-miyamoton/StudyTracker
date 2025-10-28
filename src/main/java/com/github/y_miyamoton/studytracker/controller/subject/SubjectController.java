@@ -43,7 +43,7 @@ public class SubjectController {
     }
 
     @PostMapping
-    public String create(@Validated SubjectForm form, BindingResult bindingResult, Model model) {
+    public String create(@ModelAttribute @Validated SubjectForm form, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return showCreationForm(form, model);
         }

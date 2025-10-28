@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+
 @Service
 @RequiredArgsConstructor
 public class TimerService {
@@ -31,8 +33,10 @@ public class TimerService {
         if (active == null) {
             throw new IllegalStateException("起動中のタイマーがありません。");
         }
+        var now = java.time.LocalDateTime.now();
+        var actualMinutes = (int) Duration.between(active.getStartAt(), now).toMinutes();
         timerRepository.stopActive(userContext.currentUserId());
-        appAuditService.log(userContext.currentUserId(), "TIMER_STOP","TIMER", active.getSubjectId(), "minutes=" + active.getFocusMinutes());
+        appAuditService.log(userContext.currentUserId(), "TIMER_STOP","TIMER", active.getSubjectId(), "actualMinutes=" + actualMinutes);
     }
 
     public TimerEntity currentActive() {

@@ -17,35 +17,36 @@ public record LogDTO(
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
+
     public static LogDTO toDTO(LogEntity entity) {
         return new LogDTO(
-                entity.logId(),
-                entity.userId(),
+                entity.getLogId(),
+                entity.getUserId(),
+                entity.getSubjectId(),
                 null,
                 null,
-                null,
-                entity.startAt(),
-                entity.endAt(),
-                entity.minutes(),
-                entity.memo(),
-                entity.createdAt(),
-                entity.updatedAt()
+                entity.getStartAt(),
+                entity.getEndAt(),
+                entity.getMinutes(),
+                entity.getMemo(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 
     public static LogDTO toDTO(LogEntity entity, String subjectName, String colorCode) {
         return new LogDTO(
-                entity.logId(),
-                entity.userId(),
-                entity.subjectId(),
+                entity.getLogId(),
+                entity.getUserId(),
+                entity.getSubjectId(),
                 subjectName,
                 colorCode,
-                entity.startAt(),
-                entity.endAt(),
-                entity.minutes(),
-                entity.memo(),
-                entity.createdAt(),
-                entity.updatedAt()
+                entity.getStartAt(),
+                entity.getEndAt(),
+                entity.getMinutes(),
+                entity.getMemo(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 }

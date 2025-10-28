@@ -28,17 +28,15 @@ public record TimerDTO(
     }
 
     public LogEntity toLogAt(LocalDateTime endAt, String memo) {
-        long minutes = Duration.between(startAt, endAt).toMinutes();
-        return new LogEntity(
-                null,
-                userId,
-                subjectId,
-                startAt,
-                endAt,
-                (int) minutes,
-                memo,
-                null,
-                null
-        );
+        long secs = Duration.between(startAt, endAt).getSeconds();
+        int minutes = (int) Math.max(1, Math.ceil(secs / 60.0));
+        LogEntity logEntity = new LogEntity();
+        logEntity.setUserId(userId);
+        logEntity.setSubjectId(subjectId);
+        logEntity.setStartAt(startAt);
+        logEntity.setEndAt(endAt);
+        logEntity.setMinutes(minutes);
+        logEntity.setMemo(memo);
+        return logEntity;
     }
 }
