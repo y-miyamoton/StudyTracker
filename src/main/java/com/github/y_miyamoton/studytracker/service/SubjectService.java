@@ -23,7 +23,7 @@ public class SubjectService {
     }
 
     public Optional<SubjectEntity> findById(long subjectId) {
-        return subjectRepository.selectById(subjectId, userContext.currentUserId()); // 後で確認
+        return subjectRepository.selectById(subjectId, userContext.currentUserId());
     }
 
     @Transactional

@@ -15,7 +15,6 @@
 <body>
 <section layout:fragment="content">
 
-    <!-- ヘッダー -->
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h1 class="h4 page-title mb-0">ログ編集</h1>
         <div class="toolbar d-flex">
@@ -28,14 +27,13 @@
         </div>
     </div>
 
-    <!-- フォーム -->
     <div class="card card-soft">
         <div class="card-body">
             <form th:object="${logForm}"
                   th:action="@{/logs/{logId}(logId=${logId})}"
                   th:method="put">
                 <div class="row g-3">
-                    <!-- 科目 -->
+
                     <div class="col-md-6">
                         <label for="subjectInput" class="form-label">科目 *</label>
                         <select id="subjectInput" class="form-select" th:field="*{subjectId}" required>
@@ -49,7 +47,6 @@
                              th:errors="*{subjectId}">科目は必須です</div>
                     </div>
 
-                    <!-- 開始 -->
                     <div class="col-md-3">
                         <label for="startInput" class="form-label">開始 *</label>
                         <input type="datetime-local" id="startInput" class="form-control" th:field="*{startAt}" required>
@@ -57,18 +54,15 @@
                              th:errors="*{startAt}">開始の形式が正しくありません</div>
                     </div>
 
-                    <!-- 終了 -->
                     <div class="col-md-3">
                         <label for="endInput" class="form-label">終了 *</label>
                         <input type="datetime-local" id="endInput" class="form-control" th:field="*{endAt}" required>
                         <div class="form-text text-danger" th:if="${#fields.hasErrors('endAt')}"
                              th:errors="*{endAt}">終了の形式が正しくありません</div>
-                        <!-- グローバルエラー（開始<終了） -->
                         <div class="form-text text-danger" th:if="${#fields.hasGlobalErrors()}"
                              th:errors="*{timeRangeValid}">終了は開始より後にしてください</div>
                     </div>
 
-                    <!-- メモ -->
                     <div class="col-12">
                         <label for="memoInput" class="form-label">メモ（任意）</label>
                         <textarea id="memoInput" class="form-control" th:field="*{memo}" rows="3"

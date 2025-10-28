@@ -77,12 +77,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- 空状態 -->
+
                     <tr th:if="${#lists.isEmpty(logs)}">
                         <td colspan="5" class="text-center py-4 text-muted">該当するログがありません</td>
                     </tr>
 
-                    <!-- 行 -->
                     <tr th:each="log : ${logs}" th:object="${log}" class="row-link"
                         th:with="s=*{startAt}, e=*{endAt}, m=*{minutes}, h=${m/60}, r=${m%60}"
                         th:style="'background:#fcfcfc; border-left:6px solid ' + (*{colorCode} != null ? *{colorCode} : '#e9ecef')">

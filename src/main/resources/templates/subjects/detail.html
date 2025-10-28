@@ -36,10 +36,9 @@
         </div>
     </div>
 
-    <!-- 本文カード -->
     <div class="card card-soft">
         <div class="card-body">
-            <!-- 名前行 -->
+
             <div class="d-flex align-items-center justify-content-between">
                 <h2 class="h4 mb-0" th:text="*{name}">科目名</h2>
                 <div class="d-flex align-items-center">
@@ -50,7 +49,6 @@
 
             <hr class="my-3">
 
-            <!-- 説明 -->
             <div>
                 <div class="text-muted mb-1">詳細</div>
                 <div class="p-3 bg-light rounded" th:text="*{description} ?: '（説明は登録されていません）'">

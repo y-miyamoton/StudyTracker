@@ -47,25 +47,25 @@
         SELECT COALESCE(SUM(minutes), 0)
         FROM logs
         WHERE user_id = #{userId}
-        AND start_at &gt;= #{from}
-        AND end_at   &lt;= #{to}
+            AND start_at &gt;= #{from}
+            AND end_at   &lt;= #{to}
     </select>
 
     <select id="sumBySubject"
             resultType="com.github.y_miyamoton.studytracker.entity.SubjectMinuteEntity"
     >
         SELECT s.id   AS subjectId,
-        s.name AS subjectName,
+            s.name AS subjectName,
         COALESCE(SUM(l.minutes), 0) AS totalMinutes,
-        s.color_code AS colorCode
+            s.color_code AS colorCode
         FROM subjects s
         LEFT JOIN logs l
-        ON l.user_id = #{userId}
-        AND l.subject_id = s.id
-        AND l.start_at &gt;= #{from}
-        AND l.end_at &lt;= #{to}
+            ON l.user_id = #{userId}
+                AND l.subject_id = s.id
+                AND l.start_at &gt;= #{from}
+                AND l.end_at &lt;= #{to}
         WHERE s.user_id = #{userId}
-        AND s.archived = false
+            AND s.archived = false
         GROUP BY s.id, s.name, s.color_code
         ORDER BY totalMinutes DESC
     </select>

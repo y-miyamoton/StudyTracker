@@ -35,22 +35,6 @@ public class TimerService {
         appAuditService.log(userContext.currentUserId(), "TIMER_STOP","TIMER", active.getSubjectId(), "minutes=" + active.getFocusMinutes());
     }
 
-    public void startBreak() {
-        var active = timerRepository.findActive(userContext.currentUserId());
-        if (active == null) {
-            throw new IllegalStateException("起動中のタイマーがありません。");
-        }
-        appAuditService.log(userContext.currentUserId(), "BREAK_START","TIMER", active.getSubjectId(),  null);
-    }
-
-    public void stopBreak() {
-        var active = timerRepository.findActive(userContext.currentUserId());
-        if (active == null) {
-            throw new IllegalStateException("起動中のタイマーがありません。");
-        }
-        appAuditService.log(userContext.currentUserId(), "BREAK_STOP","TIMER", active.getSubjectId(), null);
-    }
-
     public TimerEntity currentActive() {
         return timerRepository.findActive(userContext.currentUserId());
     }

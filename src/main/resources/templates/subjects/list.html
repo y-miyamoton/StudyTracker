@@ -25,7 +25,6 @@
 <body>
 <section layout:fragment="content">
 
-    <!-- ヘッダー -->
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h1 class="h4 page-title mb-0">科目一覧</h1>
         <div class="d-flex gap-2">
@@ -34,7 +33,6 @@
         </div>
     </div>
 
-    <!-- リスト（背景＝科目カラー） -->
     <div class="row g-3">
         <div class="col-12" th:if="${#lists.isEmpty(subjects)}">
             <div class="text-center text-muted py-5">登録された科目がありません</div>

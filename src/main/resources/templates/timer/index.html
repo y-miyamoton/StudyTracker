@@ -37,7 +37,6 @@
 <body>
 <section layout:fragment="content">
 
-    <!-- ヘッダー -->
     <div class="d-flex align-items-center justify-content-between mb-3">
         <div>
             <h1 class="h4 mb-1">ポモドーロ</h1>
@@ -45,7 +44,6 @@
         </div>
     </div>
 
-    <!-- 開始フォーム -->
     <div class="card card-soft mb-3">
         <div class="card-body">
             <form th:method="post" th:action="@{/timer/start}" th:object="${timerForm}" class="row g-3">
@@ -78,11 +76,9 @@
         </div>
     </div>
 
-    <!-- ステータス（待機中 or 作業中） -->
     <div class="card card-soft mb-4 focus-status">
-        <!-- 作業中 -->
+
         <div class="card-body time-card" th:if="${active != null}">
-            <!-- 大きく中央配置の時刻カード -->
             <div class="text-center">
                 <div class="display-3 time-range">
                     <span th:text="${#temporals.format(active.startAt, 'HH:mm')}">09:00</span>
@@ -90,35 +86,45 @@
                     <span th:text="${#temporals.format(targetAt, 'HH:mm')}">09:25</span>
                 </div>
             </div>
-
-            <!-- 細い単色の進捗バー -->
             <div class="progress-wrap mx-auto" style="max-width: 640px;">
                 <div class="progress-bar"
                      th:style="'width:' + ${percent} + '%;'
                     + 'animation: fillToEnd ' + ${remainingSec} + 's linear forwards;'">
                 </div>
             </div>
-
         </div>
 
-        <!-- 待機中 -->
-        <div class="card-body time-card text-center" th:if="${active == null}">
+        <div class="card-body time-card" th:if="${breakActive}">
+            <div class="text-center">
+                <div class="display-6 fw-bold text-success">休憩中</div>
+                <div class="display-5 time-range mt-1">
+                    <span th:text="${#temporals.format(now, 'HH:mm')}">09:25</span>
+                    <span class="sep">→</span>
+                    <span th:text="${#temporals.format(breakTargetAt, 'HH:mm')}">09:30</span>
+                </div>
+            </div>
+            <div class="progress-wrap mx-auto" style="max-width: 640px;">
+                <div class="progress-bar"
+                     th:style="'width:' + ${breakPercent} + '%;'
+                    + 'animation: fillToEnd ' + ${breakRemainingSec} + 's linear forwards;'">
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body time-card text-center"
+             th:if="${active == null and !breakActive}">
             <div class="display-6 fw-bold text-muted">待機中</div>
             <div class="sub">集中を開始するとここにタイマーが表示されます</div>
         </div>
     </div>
 
-    <!-- アクション -->
     <div class="card card-soft">
         <div class="card-body d-flex flex-wrap gap-2">
             <form th:method="post" th:action="@{/timer/stop}">
-                <button class="btn btn-danger btn-wide" th:disabled="${active == null}">作業停止</button>
+                <button class="btn btn-danger btn-wide" th:disabled="${active == null and (breakActive != true)}">作業停止</button>
             </form>
             <form th:method="post" th:action="@{/timer/break/start}">
                 <button class="btn btn-outline-secondary btn-wide" th:disabled="${active == null}">休憩開始</button>
-            </form>
-            <form th:method="post" th:action="@{/timer/break/stop}">
-                <button class="btn btn-outline-secondary btn-wide" th:disabled="${active == null}">休憩停止</button>
             </form>
         </div>
     </div>

@@ -45,8 +45,8 @@ public class LogController {
         if (to == null) {
             to = LocalDate.now();
         }
-        var fromDateTime = from.atStartOfDay(); // 00:00
-        var toDateTime = to.atTime(23, 59, 59); // 23:59:59
+        var fromDateTime = from.atStartOfDay();
+        var toDateTime = to.atTime(23, 59, 59);
 
         var subjects = subjectService.findActive();
         var subjectMap = subjects.stream()

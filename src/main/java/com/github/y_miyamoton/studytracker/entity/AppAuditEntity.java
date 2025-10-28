@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public record AppAuditEntity(
         Long appId,
         Long userId,
-        String action, // CREATE / UPDATE / DELETE / TIMER_START / TIMER_STOP / BREAK_START / BREAK_STOP
+        String action, // CREATE / UPDATE / DELETE / TIMER_START / TIMER_STOP / BREAK_START
         String entity, // SUBJECT / LOG / TIMER
         Long entityId,
         String detail,

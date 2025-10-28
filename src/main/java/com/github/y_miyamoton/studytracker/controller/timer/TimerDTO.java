@@ -30,15 +30,15 @@ public record TimerDTO(
     public LogEntity toLogAt(LocalDateTime endAt, String memo) {
         long minutes = Duration.between(startAt, endAt).toMinutes();
         return new LogEntity(
-                null,          // logId（採番）
+                null,
                 userId,
                 subjectId,
                 startAt,
                 endAt,
                 (int) minutes,
                 memo,
-                null,          // createdAt
-                null           // updatedAt
+                null,
+                null
         );
     }
 }

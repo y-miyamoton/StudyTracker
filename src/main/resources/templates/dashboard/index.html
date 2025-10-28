@@ -7,11 +7,17 @@
 <head>
     <title>ダッシュボード</title>
     <style>
-        /* さりげない微調整だけ */
         .stat-card .title { font-size: .95rem; color: #6c757d; }
         .stat-card .value { font-weight: 700; letter-spacing: .5px; }
         .muted { color: #6c757d; }
         .chip { display:inline-block; padding:.25rem .5rem; border-radius:999px; background:#f1f3f5; font-size:.8rem;}
+        .table-soft thead th { font-weight:600; }
+        .subject-row { background:#fcfcfc; }
+        .subject-dot { display:inline-block; width:0.9rem; height:0.9rem;
+              border-radius:999px; box-shadow:0 0 0 1px rgba(0,0,0,.08) inset;
+              margin-right:.5rem;
+        }
+        .sticky-head thead th { position:sticky; top:0; z-index:1; }
     </style>
 </head>
 <body>
@@ -81,17 +87,6 @@
     </div>
 
     <div class="card shadow-sm">
-        <style>
-            .table-soft thead th { font-weight:600; }
-            .subject-row { background:#fcfcfc; }                /* ベース背景は淡色 */
-            .subject-dot {
-              display:inline-block; width:0.9rem; height:0.9rem;
-              border-radius:999px; box-shadow:0 0 0 1px rgba(0,0,0,.08) inset;
-              margin-right:.5rem;
-            }
-            .sticky-head thead th { position:sticky; top:0; z-index:1; }
-        </style>
-
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-sm table-hover table-soft align-middle mb-0 sticky-head">

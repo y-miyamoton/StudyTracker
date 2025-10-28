@@ -5,6 +5,7 @@ import com.github.y_miyamoton.studytracker.controller.subject.SubjectDTO;
 import com.github.y_miyamoton.studytracker.service.LogService;
 import com.github.y_miyamoton.studytracker.service.SubjectService;
 import com.github.y_miyamoton.studytracker.service.TimerService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,8 +29,13 @@ public class TimerController {
     private final TimerService timerService;
     private final UserContext userContext;
 
+    private static final String S_BREAK_START_AT = "breakStartAt";
+    private static final String S_BREAK_MINUTES  = "breakMinutes";
+    private static final String S_FOCUS_MINUTES  = "focusMinutes";
+    private static final String S_SUBJECT_ID     = "subjectId";
+
     @GetMapping
-    public String index(@ModelAttribute TimerForm form, Model model) {
+    public String index(@ModelAttribute TimerForm form, HttpSession session, Model model) {
         var subjectList = subjectService.findActive()
                 .stream()
                 .map(SubjectDTO::toDTO)
@@ -37,6 +43,7 @@ public class TimerController {
         model.addAttribute("subjects", subjectList);
         var active = timerService.currentActive();
         model.addAttribute("active", active);
+        model.addAttribute("breakActive", false);
 
         if (active != null) {
             var now = java.time.LocalDateTime.now();
@@ -55,11 +62,31 @@ public class TimerController {
             model.addAttribute("percent", percent);
             model.addAttribute("targetAt", target);
         }
+
+        var breakStartAt = (LocalDateTime) session.getAttribute(S_BREAK_START_AT);
+        var breakMinutes = (Integer)       session.getAttribute(S_BREAK_MINUTES);
+        if (breakStartAt != null && breakMinutes != null && active == null) {
+            var now = LocalDateTime.now();
+            long totalSec = breakMinutes * 60L;
+            long elapsedSec = Math.max(0, Math.min(totalSec,
+                    java.time.Duration.between(breakStartAt, now).getSeconds()));
+            long remainingSec = totalSec - elapsedSec;
+            int percent = totalSec == 0 ? 100 : (int) Math.round(elapsedSec * 100.0 / totalSec);
+            var target = breakStartAt.plusMinutes(breakMinutes);
+
+            model.addAttribute("breakActive", true);
+            model.addAttribute("now", now);
+            model.addAttribute("breakTotalSec", totalSec);
+            model.addAttribute("breakElapsedSec", elapsedSec);
+            model.addAttribute("breakRemainingSec", remainingSec);
+            model.addAttribute("breakPercent", percent);
+            model.addAttribute("breakTargetAt", target);
+        }
         return "timer/index";
     }
 
     @PostMapping("/start")
-    public String start(@ModelAttribute @Validated TimerForm form, RedirectAttributes redirectAttributes, BindingResult bindingResult, Model model) {
+    public String start(@ModelAttribute @Validated TimerForm form, HttpSession session, RedirectAttributes redirectAttributes, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             var subjectList = subjectService.findActive()
                     .stream()
@@ -69,6 +96,11 @@ public class TimerController {
             model.addAttribute("active", timerService.currentActive());
             return "timer/index";
         }
+        clearBreakSession(session);
+
+        session.setAttribute(S_SUBJECT_ID,    form.subjectId());
+        session.setAttribute(S_FOCUS_MINUTES, form.focusMinutes());
+        session.setAttribute(S_BREAK_MINUTES, form.breakMinutes());
         var entity = form.toEntity(userContext.currentUserId());
         timerService.startFocus(entity);
         redirectAttributes.addFlashAttribute("timerForm", form);
@@ -90,16 +122,32 @@ public class TimerController {
     }
 
     @PostMapping("/break/start")
-    public String startBreak() {
-        timerService.startBreak();
+    public String startBreak(HttpSession session, RedirectAttributes redirectAttributes) {
+        var active = timerService.currentActive();
+        if (active == null) {
+            return "redirect:/timer";
+        }
+
+        var endAt   = LocalDateTime.now();
+        var timerDTO= TimerDTO.fromEntity(active);
+        var newLog  = timerDTO.toLogAt(endAt, "自動登録：ポモドーロ（休憩開始）");
+        logService.create(newLog);
+
+        timerService.stopFocus();
+
+        session.setAttribute(S_SUBJECT_ID,    active.getSubjectId());
+        session.setAttribute(S_FOCUS_MINUTES, active.getFocusMinutes());
+        session.setAttribute(S_BREAK_MINUTES, active.getBreakMinutes() != null ? active.getBreakMinutes() : 5);
+
+        session.setAttribute(S_BREAK_START_AT, LocalDateTime.now());
+
+        redirectAttributes.addFlashAttribute("timerForm",
+                new TimerForm(active.getSubjectId(), active.getFocusMinutes(), active.getBreakMinutes()));
+
         return "redirect:/timer";
     }
 
-    @PostMapping("/break/stop")
-    public String stopBreak() {
-        timerService.stopBreak();
-        return "redirect:/timer";
+    private void clearBreakSession(HttpSession session) {
+        session.removeAttribute(S_BREAK_START_AT);
     }
-
-
 }
